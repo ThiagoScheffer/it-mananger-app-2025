@@ -1,0 +1,402 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 215 75% 40%;
+    --primary-foreground: 210 100% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.print-hidden {
+    display: none;
+}
+
+button {
+    background-color: hsl(0 0% 100%); /* --primary */
+    color: hsl(215 75% 40%); /* --primary-foreground */
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+    outline: none;
+    box-shadow: inherit
+}
+
+    button:hover {
+        background-color: hsl(210, 40%, 98%); /* Slightly darker */
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    button:active {
+        transform: scale(0.95);
+    }
+
+    button:focus-visible {
+        outline: 2px solid hsl(210, 40%, 98%);
+        outline-offset: 2px;
+    }
+
+    .animated-button {
+  position: relative;
+  display: inline-block;
+  padding: 12px 24px;
+  border: none;
+  font-size: 16px;
+  background-color: #2196F3;
+  border-radius: 100px;
+  font-weight: 600;
+  color: #ffffff40;
+  box-shadow: 0 0 0 2px #ffffff20;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.animated-button span:last-child {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background-color: #2196F3;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.animated-button span:first-child {
+  position: relative;
+  z-index: 1;
+}
+
+.animated-button:hover {
+  box-shadow: 0 0 0 5px #2195f360;
+  color: #ffffff;
+}
+
+.animated-button:active {
+  scale: 0.95;
+}
+
+.animated-button:hover span:last-child {
+  width: 150px;
+  height: 150px;
+  opacity: 1;
+}
+
+/* Button with draw stroke animation */
+
+.anibtn-drawstrokelong {
+  width: 225px;
+  height: 40px;
+  background-color: rgba(186, 239, 255, 0.952);
+  margin: 20px;
+  color: #00ccfffa;
+  position: relative;
+  overflow: hidden;
+  font-size: 14px;
+  letter-spacing: 1px;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+
+
+.anibtn-drawstroke {
+  width: 170px;
+  height: 40px;
+  background-color: rgba(186, 239, 255, 0.952);
+  margin: 20px;
+  color: #00ccfffa;
+  position: relative;
+  overflow: hidden;
+  font-size: 14px;
+  letter-spacing: 1px;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+
+.anibtn-drawstroke:before, .anibtn-drawstroke:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background-color: #00ccff;
+  transition: all 0.3s cubic-bezier(0.35, 0.1, 0.25, 1);
+}
+
+.anibtn-drawstroke:before {
+  right: 0;
+  top: 0;
+  transition: all 0.5s cubic-bezier(0.35, 0.1, 0.25, 1);
+}
+
+.anibtn-drawstroke:after {
+  left: 0;
+  bottom: 0;
+}
+
+.anibtn-drawstroke span {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}
+
+.anibtn-drawstroke span:before, .anibtn-drawstroke span:after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 0;
+  background-color: #44d8a4;
+  transition: all 0.3s cubic-bezier(0.35, 0.1, 0.25, 1);
+}
+
+.anibtn-drawstroke span:before {
+  right: 0;
+  top: 0;
+  transition: all 0.5s cubic-bezier(0.35, 0.1, 0.25, 1);
+}
+
+.anibtn-drawstroke span:after {
+  left: 0;
+  bottom: 0;
+}
+
+.anibtn-drawstroke p {
+  padding: 0;
+  margin: 0;
+  transition: all 0.4s cubic-bezier(0.35, 0.1, 0.25, 1);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.anibtn-drawstroke p:before, .anibtn-drawstroke p:after {
+  position: absolute;
+  width: 100%;
+  transition: all 0.4s cubic-bezier(0.35, 0.1, 0.25, 1);
+  z-index: 1;
+  left: 0;
+}
+
+.anibtn-drawstroke p:before {
+  content: attr(data-title);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.anibtn-drawstroke p:after {
+  content: attr(data-text);
+  top: 150%;
+}
+
+.anibtn-drawstroke:hover:before, .anibtn-drawstroke:hover:after {
+  width: 100%;
+}
+
+.anibtn-drawstroke:hover span {
+  z-index: 1;
+}
+
+.anibtn-drawstroke:hover span:before, .anibtn-drawstroke:hover span:after {
+  height: 100%;
+}
+
+.anibtn-drawstroke:hover p:before {
+  top: -50%;
+  transform: rotate(5deg);
+}
+
+.anibtn-drawstroke:hover p:after {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.anibtn-drawstroke:focus {
+  outline: none;
+}
+
+
+/* Universal shine effect for text with preserved colors */
+.btn-shine-text {
+  position: relative;
+  display: inline-block;
+  color: inherit; /* Ensure the original text color is not overwritten */
+  background: linear-gradient(to right, #a1a3fc 0%, #fff 10%, #05a3ff 20%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text; /* Clip the gradient to the text */
+  -webkit-text-fill-color: transparent; /* Make text transparent for gradient */
+  animation: shine 3s infinite linear;
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Shine Animation */
+@keyframes shine {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* Adding color to text */
+.btn-shine-text {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-shine-text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background-color: inherit; /* Inherit color from parent */
+  -webkit-background-clip: text; /* Apply the color clip to the text */
+}
+
+.cardneonborder {
+ width: inherit;
+ height: inherit;
+ background-image: linear-gradient(163deg, #05fdfd 0%, #001fd1 100%);
+ border-radius: 20px;
+ transition: all .3s;
+}
+
+.cardneonborder2 {
+ width: inherit;
+ height: inherit;
+ background-color: #e4ecd1;
+ border-radius:0;
+ transition: all .2s;
+}
+
+.cardneonborder2:hover {
+ transform: scale(0.98);
+ border-radius: 20px;
+}
+
+.cardneonborder:hover {
+ box-shadow: 0px 0px 30px 1px rgba(65, 124, 250, 0.3);
+}
