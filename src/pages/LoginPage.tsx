@@ -120,11 +120,14 @@ const LoginPage: React.FC = () => {
        
         
         <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Credenciais de Demonstração:</p>
+          <p>demo account:</p>
           <div className="mt-2 grid gap-2">
             <div className="rounded-md bg-blue-50 p-2">
-              <p><strong>Admin:</strong> admin@gestorpro.com</p>
-            </div>            
+              <p><strong>Admin:</strong> admin@gestor.com</p>
+            </div> 
+            <div className="rounded-md bg-blue-50 p-2">
+              <p><strong>pass:</strong> testing</p>
+            </div>              
             <p className="mt-1 italic"></p>
           </div>
         </div>

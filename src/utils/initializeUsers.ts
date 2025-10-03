@@ -15,11 +15,11 @@ export function initializeDefaultUsers() {
         if (currentUsers.length === 0) {
             const adminUser: User = {
                 id: uuidv4(),
-                email: 'admin@gestorpro.com',
+                email: 'admin@gestor.com',
                 name: 'Administrador',
                 role: 'admin',
                 isActive: true,
-                password: 'admin', // Basic default password
+                password: 'testing', // Basic default password
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             };
