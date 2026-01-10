@@ -132,6 +132,8 @@ src/
 - **Lucide icons** for visual clarity
 - **Consistent spacing** and typography scales
 
+![Application Screenshot][fixappthumbnail.jpg]
+
 ### Responsive Behavior
 - Mobile-first design approach
 - Adaptive layouts for different screen sizes
