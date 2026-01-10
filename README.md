@@ -132,7 +132,6 @@ src/
 - **Lucide icons** for visual clarity
 - **Consistent spacing** and typography scales
 
-![Application Screenshot][fixappthumbnail.jpg]
 
 ### Responsive Behavior
 - Mobile-first design approach
@@ -275,3 +274,7 @@ For technical support or questions about the system:
 - Test functionality in development mode
 
 Built with ❤️ using modern web technologies for efficient business management.
+
+## 🖼️ Application Screenshots
+
+![Application Screenshot](fixappthumbnail.jpg)
