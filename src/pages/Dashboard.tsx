@@ -26,7 +26,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Service, Installment } from "@/types";
 import { getServicesWithClientNames } from '@/utils/dataHelpers';
-import { useFinancials, getRemainingInstallments, getPaidAmount,getInstallmentPaidAmount } from '@/hooks/useFinancials';
+import { useFinancials, getRemainingInstallments, getPaidAmount, getInstallmentPaidAmount } from '@/hooks/useFinancials';
 
 export default function Dashboard() {
     const { services, financialData, updateFinancialSummary, expenses } = useAppContext();
@@ -169,36 +169,36 @@ export default function Dashboard() {
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <DashboardCard
-                    title="Receitas do Mês"
+                    title="Revenue this Month"
                     value={`R$ ${financialData.summary.monthlyRevenue.toFixed(2)}`}
-                    footer={`${financialData.summary.completedServices} serviços concluídos`}
+                    footer={`${financialData.summary.completedServices} services completed`}
                     icon={<ArrowUpRight className="h-5 w-5 text-green-600" />}
                     valueColor="text-green-700"
                     className="border-l-4 border-green-500"
                 />
 
                 <DashboardCard
-                    title="Despesas do Mês"
+                    title="Expenses this Month"
                     value={`R$ ${financialData.summary.monthlyExpenses.toFixed(2)}`}
-                    footer="Custos operacionais"
+                    footer="Operational costs"
                     icon={<ArrowDownRight className="h-5 w-5 text-red-600" />}
                     valueColor="text-red-600"
                     className="border-l-4 border-red-500"
                 />
 
                 <DashboardCard
-                    title="Lucro do Mês"
+                    title="Profit this Month"
                     value={`R$ ${financialData.summary.monthlyProfit.toFixed(2)}`}
-                    footer={`${financialData.summary.profitMargin.toFixed(1)}% de margem`}
+                    footer={`${financialData.summary.profitMargin.toFixed(1)}% margin`}
                     icon={<BarChart3 className="h-5 w-5 text-blue-600" />}
                     valueColor="text-blue-700"
                     className="border-l-4 border-blue-500"
                 />
 
                 <DashboardCard
-                    title="Saldo em Conta"
+                    title="Account Balance"
                     value={`R$ ${financialData.summary.balance.toFixed(2)}`}
-                    footer="Saldo disponível"
+                    footer="Available balance"
                     icon={<DollarSign className="h-5 w-5 text-amber-600" />}
                     valueColor="text-amber-700"
                     className="border-l-4 border-amber-500"
@@ -212,7 +212,7 @@ export default function Dashboard() {
                         <CardHeader>
                             <CardTitle className="flex items-center space-x-2">
                                 <BarChart3 className="h-5 w-5 text-blue-600" />
-                                <span>Visão Financeira Mensal</span>
+                                <span>Monthly Financial Overview</span>
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -240,19 +240,19 @@ export default function Dashboard() {
                                         <Legend />
                                         <Bar
                                             dataKey="revenue"
-                                            name="Receitas"
+                                            name="Revenue"
                                             fill="#3B82F6"
                                             radius={[4, 4, 0, 0]}
                                         />
                                         <Bar
                                             dataKey="expenses"
-                                            name="Despesas"
+                                            name="Expenses"
                                             fill="#EF4444"
                                             radius={[4, 4, 0, 0]}
                                         />
                                         <Bar
                                             dataKey="profit"
-                                            name="Lucro"
+                                            name="Profit"
                                             fill="#10B981"
                                             radius={[4, 4, 0, 0]}
                                         />
@@ -269,7 +269,7 @@ export default function Dashboard() {
                         <CardHeader>
                             <CardTitle className="flex items-center space-x-2">
                                 <Clock className="h-5 w-5 text-blue-600" />
-                                <span>Últimos Serviços</span>
+                                <span>Recent Services</span>
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -277,10 +277,10 @@ export default function Dashboard() {
                                 <table className="w-full">
                                     <thead className="bg-gray-50">
                                         <tr className="text-left">
-                                            <th className="p-3 font-medium text-gray-700">Cliente</th>
-                                            <th className="p-3 font-medium text-gray-700">Serviço</th>
-                                            <th className="p-3 font-medium text-gray-700">Data</th>
-                                            <th className="p-3 font-medium text-gray-700">Valor</th>
+                                            <th className="p-3 font-medium text-gray-700">Client</th>
+                                            <th className="p-3 font-medium text-gray-700">Service</th>
+                                            <th className="p-3 font-medium text-gray-700">Date</th>
+                                            <th className="p-3 font-medium text-gray-700">Value</th>
                                             <th className="p-3 font-medium text-gray-700">Status</th>
                                         </tr>
                                     </thead>
@@ -289,17 +289,17 @@ export default function Dashboard() {
                                             <tr key={service.id} className="hover:bg-gray-50 transition-colors">
                                                 <td className="p-3 text-gray-800">{service.clientName}</td>
                                                 <td className="p-3 text-gray-800">{service.name}</td>
-                                                <td className="p-3 text-gray-600">{new Date(service.date).toLocaleDateString('pt-BR')}</td>
+                                                <td className="p-3 text-gray-600">{new Date(service.date).toLocaleDateString()}</td>
                                                 <td className="p-3 font-medium text-gray-800">
                                                     R$ {service.totalValue.toFixed(2)}
                                                     {service.paymentStatus === 'partial' && (
                                                         <>
-                                                        <span className="text-xs text-purple-600 ml-1">(Parcial)</span>
-                                                        {service.remainingInstallments.length > 0 && (
-                                                            <div className="text-xs text-gray-500">
-                                                                ({service.remainingInstallments.length} parcelas restantes - R$ {(service.displayValue / service.remainingInstallments.length).toFixed(2)})
-                                                            </div>
-                                                        )}
+                                                            <span className="text-xs text-purple-600 ml-1">(Partial)</span>
+                                                            {service.remainingInstallments.length > 0 && (
+                                                                <div className="text-xs text-gray-500">
+                                                                    ({service.remainingInstallments.length} installments remaining - R$ {(service.displayValue / service.remainingInstallments.length).toFixed(2)})
+                                                                </div>
+                                                            )}
                                                         </>
                                                     )}
                                                 </td>
@@ -321,14 +321,14 @@ export default function Dashboard() {
                             <div className="flex justify-between items-center">
                                 <CardTitle className="flex items-center space-x-2">
                                     <AlertTriangle className="h-5 w-5 text-amber-600" />
-                                    <span>Despesas Pendentes</span>
+                                    <span>Pending Expenses</span>
                                 </CardTitle>
                                 <button
                                     onClick={() => requestSort('days')}
                                     className="flex items-center text-sm text-gray-500 hover:text-gray-700"
                                 >
                                     <ArrowUpDown className="h-4 w-4 mr-1" />
-                                    Ordenar
+                                    Sort
                                 </button>
                             </div>
                         </CardHeader>
@@ -346,7 +346,7 @@ export default function Dashboard() {
                                                     <p className="font-medium text-gray-800">{expense.description}</p>
                                                     <p className="text-sm text-gray-600 flex items-center">
                                                         <Clock className="h-3 w-3 mr-1" />
-                                                        Vence em: {new Date(expense.dueDate).toLocaleDateString('pt-BR')}
+                                                        Due in: {new Date(expense.dueDate).toLocaleDateString()}
                                                     </p>
                                                 </div>
                                                 <div className="text-right">
@@ -354,7 +354,7 @@ export default function Dashboard() {
                                                         R$ {expense.value.toFixed(2)}
                                                     </p>
                                                     <p className={`text-xs ${daysRemaining <= 3 ? 'text-red-600' : 'text-amber-600'}`}>
-                                                        {daysRemaining} dias restantes
+                                                        {daysRemaining} days remaining
                                                     </p>
                                                 </div>
                                             </div>
@@ -364,7 +364,7 @@ export default function Dashboard() {
                             ) : (
                                 <div className="flex flex-col items-center justify-center h-40 text-gray-500 space-y-2">
                                     <CheckCircle className="h-8 w-8 text-green-500" />
-                                    <span>Nenhuma despesa pendente</span>
+                                    <span>No pending expenses</span>
                                 </div>
                             )}
                         </CardContent>
@@ -377,14 +377,14 @@ export default function Dashboard() {
                         <div className="flex justify-between items-center">
                             <CardTitle className="flex items-center space-x-2">
                                 <AlertTriangle className="h-5 w-5 text-red-600" />
-                                <span>Pagamentos em Atraso</span>
+                                <span>Overdue Payments</span>
                             </CardTitle>
                             <button
                                 onClick={() => requestSort('days')}
                                 className="flex items-center text-sm text-gray-500 hover:text-gray-700"
                             >
                                 <ArrowUpDown className="h-4 w-4 mr-1" />
-                                Ordenar
+                                Sort
                             </button>
                         </div>
                     </CardHeader>
@@ -394,12 +394,12 @@ export default function Dashboard() {
                                 <table className="w-full min-w-[600px] text-sm md:text-base">
                                     <thead className="bg-gray-50">
                                         <tr className="text-left">
-                                            <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Cliente</th>
-                                            <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Serviço</th>
-                                            <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Data</th>
-                                            <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Valor</th>
+                                            <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Client</th>
+                                            <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Service</th>
+                                            <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Date</th>
+                                            <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Value</th>
                                             <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Status</th>
-                                            <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Dias</th>
+                                            <th className="p-3 font-medium text-gray-700 whitespace-nowrap">Days</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200">
@@ -415,21 +415,21 @@ export default function Dashboard() {
                                                         {service.name}
                                                     </td>
                                                     <td className="p-3 text-gray-600 whitespace-nowrap">
-                                                        {new Date(service.date).toLocaleDateString('pt-BR')}
+                                                        {new Date(service.date).toLocaleDateString()}
                                                     </td>
                                                     <td className="p-3 font-medium text-red-700 whitespace-nowrap">
                                                         {service.paymentStatus === 'partial' ? (
                                                             <div className="flex flex-col">
                                                                 <span>R$ {service.displayValue.toFixed(2)}</span>
                                                                 <span className="text-xs text-gray-500">
-                                                                    {service.remainingInstallments.length} parcela(s) restante(s) - R$ {(service.displayValue / service.remainingInstallments.length).toFixed(2)}
+                                                                    {service.remainingInstallments.length} installment(s) remaining - R$ {(service.displayValue / service.remainingInstallments.length).toFixed(2)}
                                                                 </span>
                                                             </div>
                                                         ) : (
                                                             <span>R$ {service.totalValue.toFixed(2)}</span>
                                                         )}
                                                         {service.paymentStatus === 'partial' && (
-                                                            <span className="text-xs text-purple-600 ml-1">(Parcial)</span>
+                                                            <span className="text-xs text-purple-600 ml-1">(Partial)</span>
                                                         )}
                                                     </td>
                                                     <td className="p-3 whitespace-nowrap">
@@ -447,7 +447,7 @@ export default function Dashboard() {
                         ) : (
                             <div className="flex flex-col items-center justify-center h-40 text-gray-500 space-y-2">
                                 <CheckCircle className="h-8 w-8 text-green-500" />
-                                <span>Nenhum pagamento em atraso</span>
+                                <span>No overdue payments</span>
                             </div>
                         )}
                     </CardContent>

@@ -24,17 +24,17 @@ import { InstallmentService } from "@/services/InstallmentService";
 import { v4 as uuidv4 } from 'uuid';
 
 const serviceSchema = z.object({
-  name: z.string().min(1, 'Nome é obrigatório'),
+  name: z.string().min(1, 'Name is required'),
   description: z.string().optional(),
-  clientId: z.string().min(1, 'Cliente é obrigatório'),
+  clientId: z.string().min(1, 'Client is required'),
   equipmentId: z.string().optional(),
-  date: z.string().min(1, 'Data é obrigatória'),
-  servicePrice: z.number().min(0, 'Preço deve ser positivo'),
-  pickupDeliveryPrice: z.number().min(0, 'Preço deve ser positivo'),
+  date: z.string().min(1, 'Date is required'),
+  servicePrice: z.number().min(0, 'Price must be positive'),
+  pickupDeliveryPrice: z.number().min(0, 'Price must be positive'),
   serviceStatus: z.enum(['pending', 'inProgress', 'completed', 'cancelled']),
   paymentStatus: z.enum(['unpaid', 'pending', 'partial', 'paid']),
   visitType: z.enum(['novo', 'retorno']),
-  warrantyPeriod: z.number().min(0, 'Período de garantia deve ser positivo'),
+  warrantyPeriod: z.number().min(0, 'Warranty period must be positive'),
 });
 
 type ServiceFormData = z.infer<typeof serviceSchema>;
@@ -56,11 +56,11 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
     getTypeOptions,
   } = useAppContext();
 
-  const { 
-    createInstallments, 
-    getServiceInstallments, 
+  const {
+    createInstallments,
+    getServiceInstallments,
     updateServiceInstallments,
-    deleteServiceInstallments 
+    deleteServiceInstallments
   } = useInstallments();
 
   const form = useForm<ServiceFormData>({
@@ -208,17 +208,17 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
       const currentTotal = totalValue;
       if (Math.abs(currentTotal - previousTotal) > 0.01) {
         const shouldRecalculate = window.confirm(
-          `O valor total do serviço mudou de R$ ${previousTotal.toFixed(2)} para R$ ${currentTotal.toFixed(2)}. ` +
-          `Deseja recalcular as parcelas pendentes?`
+          `The total service value changed from R$ ${previousTotal.toFixed(2)} to R$ ${currentTotal.toFixed(2)}. ` +
+          `Do you want to recalculate the pending installments?`
         );
-        
+
         if (shouldRecalculate && plannedInstallments.length > 0) {
-          const firstDueDate = plannedInstallments[0]?.dueDate || 
+          const firstDueDate = plannedInstallments[0]?.dueDate ||
             new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-          
+
           updateServiceInstallments(
-            service.id, 
-            currentTotal, 
+            service.id,
+            currentTotal,
             plannedInstallments.length,
             firstDueDate
           );
@@ -237,7 +237,7 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
       if (plannedInstallments.length > 0) {
         const validation = InstallmentService.validateInstallmentPlan(plannedInstallments, totalValue);
         if (!validation.isValid) {
-          toast.error(`Erro nas parcelas: ${validation.errors.join(', ')}`);
+          toast.error(`Error in installments: ${validation.errors.join(', ')}`);
           return;
         }
       }
@@ -281,7 +281,7 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
           const existingInstallments = getServiceInstallments(service.id);
           if (existingInstallments.length > 0) {
             const shouldDelete = window.confirm(
-              'Este serviço possui parcelas cadastradas. Deseja removê-las?'
+              'This service has registered installments. Do you want to remove them?'
             );
             if (shouldDelete) {
               await deleteServiceInstallments(service.id);
@@ -289,7 +289,7 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
           }
         }
 
-        toast.success('Serviço atualizado com sucesso!');
+        toast.success('Service updated successfully!');
       } else {
         // Create new service
         const createdService = addService(
@@ -305,13 +305,13 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
           await createInstallments(createdService.id, plannedInstallments);
         }
 
-        toast.success('Serviço criado com sucesso!');
+        toast.success('Service created successfully!');
       }
 
       setOpen(false);
     } catch (error) {
       console.error('Error saving service:', error);
-      toast.error('Erro ao salvar serviço');
+      toast.error('Error saving service');
     }
   };
 
@@ -392,7 +392,7 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle>{service ? "Editar Serviço" : "Novo Serviço"}</DialogTitle>
+          <DialogTitle>{service ? "Edit Service" : "New Service"}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -403,7 +403,7 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nome do Serviço</FormLabel>
+                    <FormLabel>Service Name</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -417,11 +417,11 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                 name="clientId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Cliente</FormLabel>
+                    <FormLabel>Client</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione um cliente" />
+                          <SelectValue placeholder="Select a client" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -447,11 +447,11 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                 name="equipmentId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Equipamento</FormLabel>
+                    <FormLabel>Equipment</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione um equipamento" />
+                          <SelectValue placeholder="Select an equipment" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -472,7 +472,7 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                 name="date"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Data</FormLabel>
+                    <FormLabel>Date</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -502,7 +502,7 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                 name="servicePrice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Preço do Serviço</FormLabel>
+                    <FormLabel>Service Price</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -521,7 +521,7 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                 name="pickupDeliveryPrice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Preço de Busca/Entrega</FormLabel>
+                    <FormLabel>Pickup/Delivery Price</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -544,18 +544,18 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                   const statusClass = getServiceStatusClass(field.value);
                   return (
                     <FormItem>
-                      <FormLabel>Status do Serviço</FormLabel>
+                      <FormLabel>Service Status</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger className={statusClass}>
-                            <SelectValue placeholder="Selecione um status" />
+                            <SelectValue placeholder="Select a status" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="pending">Pendente</SelectItem>
-                          <SelectItem value="inProgress">Em Andamento</SelectItem>
-                          <SelectItem value="completed">Concluído</SelectItem>
-                          <SelectItem value="cancelled">Cancelado</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="inProgress">In Progress</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -571,18 +571,18 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                   const statusClass = getPaymentStatusClass(field.value);
                   return (
                     <FormItem>
-                      <FormLabel>Status do Pagamento</FormLabel>
+                      <FormLabel>Payment Status</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger className={statusClass}>
-                            <SelectValue placeholder="Selecione um status" />
+                            <SelectValue placeholder="Select a status" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="unpaid">Não Pago</SelectItem>
-                          <SelectItem value="pending">Pendente</SelectItem>
-                          <SelectItem value="partial">Parcial</SelectItem>
-                          <SelectItem value="paid">Pago</SelectItem>
+                          <SelectItem value="unpaid">Unpaid</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="partial">Partial</SelectItem>
+                          <SelectItem value="paid">Paid</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -598,16 +598,16 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                 name="visitType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tipo de Visita</FormLabel>
+                    <FormLabel>Visit Type</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione um tipo" />
+                          <SelectValue placeholder="Select a type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="novo">Novo</SelectItem>
-                        <SelectItem value="retorno">Retorno</SelectItem>
+                        <SelectItem value="novo">New</SelectItem>
+                        <SelectItem value="retorno">Return</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -620,7 +620,7 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                 name="warrantyPeriod"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Período de Garantia (dias)</FormLabel>
+                    <FormLabel>Warranty Period (days)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -660,10 +660,10 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
             />
 
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-medium mb-2">Resumo Financeiro</h3>
+              <h3 className="font-medium mb-2">Financial Summary</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-600">Valor Total:</span>
+                  <span className="text-gray-600">Total Value:</span>
                   <span className="font-medium ml-2">R$ {totalValue.toFixed(2)}</span>
                 </div>
                 <div>
@@ -673,11 +673,11 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                 {plannedInstallments.length > 0 && (
                   <>
                     <div>
-                      <span className="text-gray-600">Parcelas:</span>
+                      <span className="text-gray-600">Installments:</span>
                       <span className="font-medium ml-2">{plannedInstallments.length}x</span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Valor da Parcela:</span>
+                      <span className="text-gray-600">Installment Value:</span>
                       <span className="font-medium ml-2">
                         R$ {plannedInstallments.length > 0 ? (totalValue / plannedInstallments.length).toFixed(2) : '0.00'}
                       </span>
@@ -689,7 +689,7 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
 
             <DialogFooter className="gap-2">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                Cancelar
+                Cancel
               </Button>
 
               <div className="flex gap-2">
@@ -702,12 +702,12 @@ export default function ServiceDialog({ open, setOpen, service }: ServiceDialogP
                       form.handleSubmit(onSubmit)();
                     }}
                   >
-                    Marcar como Pago
+                    Mark as Paid
                   </Button>
                 )}
 
                 <Button type="submit">
-                  {service ? 'Atualizar' : 'Criar'} Serviço
+                  {service ? 'Update' : 'Create'} Service
                 </Button>
               </div>
             </DialogFooter>

@@ -34,13 +34,13 @@ import { toast } from "sonner";
 
 export default function EquipmentPage() {
   const { clients, equipments, addEquipment, updateEquipment, deleteEquipment } = useAppContext();
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingEquipment, setEditingEquipment] = useState<typeof equipments[0] | undefined>(undefined);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [equipmentToDelete, setEquipmentToDelete] = useState<string | undefined>(undefined);
-  
+
   // Form state for adding/editing equipment
   const [formData, setFormData] = useState({
     name: "",
@@ -51,11 +51,11 @@ export default function EquipmentPage() {
     status: "operational" as "operational" | "needs_service" | "decommissioned",
     notes: ""
   });
-  
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
-  
+
   const handleAddEquipment = () => {
     setEditingEquipment(undefined);
     setFormData({
@@ -69,7 +69,7 @@ export default function EquipmentPage() {
     });
     setDialogOpen(true);
   };
-  
+
   const handleEditEquipment = (equipment: typeof equipments[0]) => {
     setEditingEquipment(equipment);
     setFormData({
@@ -83,45 +83,45 @@ export default function EquipmentPage() {
     });
     setDialogOpen(true);
   };
-  
+
   const handleDeleteClick = (id: string) => {
     setEquipmentToDelete(id);
     setDeleteDialogOpen(true);
   };
-  
+
   const confirmDelete = () => {
     if (equipmentToDelete) {
       deleteEquipment(equipmentToDelete);
-      toast.success("Equipamento excluído com sucesso");
+      toast.success("Equipment deleted successfully");
       setDeleteDialogOpen(false);
     }
   };
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  
+
   const handleStatusChange = (value: string) => {
-    setFormData(prev => ({ 
-      ...prev, 
-      status: value as "operational" | "needs_service" | "decommissioned" 
+    setFormData(prev => ({
+      ...prev,
+      status: value as "operational" | "needs_service" | "decommissioned"
     }));
   };
-  
+
   const handleClientChange = (value: string) => {
     setFormData(prev => ({ ...prev, clientId: value }));
   };
-  
+
   const handleSaveEquipment = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate required fields
     if (!formData.name || !formData.clientId) {
-      toast.error("Nome e Cliente são campos obrigatórios");
+      toast.error("Name and Client are required fields");
       return;
     }
-    
+
     try {
       if (editingEquipment) {
         updateEquipment({
@@ -134,7 +134,7 @@ export default function EquipmentPage() {
           status: formData.status,
           notes: formData.notes
         });
-        toast.success("Equipamento atualizado com sucesso");
+        toast.success("Equipment updated successfully");
       } else {
         addEquipment({
           name: formData.name,
@@ -145,12 +145,12 @@ export default function EquipmentPage() {
           status: formData.status,
           notes: formData.notes
         });
-        toast.success("Equipamento adicionado com sucesso");
+        toast.success("Equipment added successfully");
       }
       setDialogOpen(false);
     } catch (error) {
       console.error("Error saving equipment:", error);
-      toast.error("Erro ao salvar equipamento");
+      toast.error("Error saving equipment");
     }
   };
 
@@ -159,27 +159,27 @@ export default function EquipmentPage() {
     (equipment) => {
       const clientName = clients.find(c => c.id === equipment.clientId)?.name || "";
       const searchTermLower = searchQuery.toLowerCase();
-      
+
       return equipment.name.toLowerCase().includes(searchTermLower) ||
         equipment.type.toLowerCase().includes(searchTermLower) ||
         equipment.model.toLowerCase().includes(searchTermLower) ||
         clientName.toLowerCase().includes(searchTermLower);
     }
   );
-  
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Equipamentos</h1>
-        <Button className="anibtn-drawstroke" onClick={handleAddEquipment}>+ Novo Equipamento</Button>
+        <h1 className="text-2xl font-bold">Equipments</h1>
+        <Button className="anibtn-drawstroke" onClick={handleAddEquipment}>+ New Equipment</Button>
       </div>
 
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold mb-4">Gerenciamento de Equipamentos</h2>
-        
+        <h2 className="text-xl font-semibold mb-4">Equipment Management</h2>
+
         <div className="mb-6 relative">
           <Input
-            placeholder="Buscar por nome, tipo, modelo, cliente..."
+            placeholder="Search by name, type, model, client..."
             value={searchQuery}
             onChange={handleSearchChange}
             className="pl-10"
@@ -195,20 +195,20 @@ export default function EquipmentPage() {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-50 text-left">
-                <th className="p-3 border-b">Nome</th>
-                <th className="p-3 border-b">Cliente</th>
-                <th className="p-3 border-b">Tipo</th>
-                <th className="p-3 border-b">Modelo</th>
-                <th className="p-3 border-b">Nº de Série</th>
+                <th className="p-3 border-b">Name</th>
+                <th className="p-3 border-b">Client</th>
+                <th className="p-3 border-b">Type</th>
+                <th className="p-3 border-b">Model</th>
+                <th className="p-3 border-b">Serial Number</th>
                 <th className="p-3 border-b">Status</th>
-                <th className="p-3 border-b">Ações</th>
+                <th className="p-3 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredEquipments.map((equipment) => (
                 <tr key={equipment.id} className="border-b hover:bg-gray-50">
                   <td className="p-3">{equipment.name}</td>
-                  <td className="p-3">{clients.find(c => c.id === equipment.clientId)?.name || "Cliente não encontrado"}</td>
+                  <td className="p-3">{clients.find(c => c.id === equipment.clientId)?.name || "Client not found"}</td>
                   <td className="p-3">{equipment.type}</td>
                   <td className="p-3">{equipment.model}</td>
                   <td className="p-3">{equipment.serialNumber || "-"}</td>
@@ -236,11 +236,11 @@ export default function EquipmentPage() {
                   </td>
                 </tr>
               ))}
-              
+
               {filteredEquipments.length === 0 && (
                 <tr>
                   <td colSpan={7} className="p-8 text-center text-gray-500">
-                    Nenhum equipamento encontrado
+                    No equipment found
                   </td>
                 </tr>
               )}
@@ -253,13 +253,13 @@ export default function EquipmentPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-[550px]">
           <DialogHeader>
-            <DialogTitle>{editingEquipment ? "Editar Equipamento" : "Novo Equipamento"}</DialogTitle>
+            <DialogTitle>{editingEquipment ? "Edit Equipment" : "New Equipment"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSaveEquipment}>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <label htmlFor="name" className="text-sm font-medium">
-                  Nome do Equipamento*
+                  Equipment Name*
                 </label>
                 <Input
                   id="name"
@@ -269,14 +269,14 @@ export default function EquipmentPage() {
                   required
                 />
               </div>
-              
+
               <div className="grid gap-2">
                 <label htmlFor="clientId" className="text-sm font-medium">
-                  Cliente*
+                  Client*
                 </label>
                 <Select value={formData.clientId} onValueChange={handleClientChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione um cliente" />
+                    <SelectValue placeholder="Select a client" />
                   </SelectTrigger>
                   <SelectContent>
                     {clients.map(client => (
@@ -287,23 +287,23 @@ export default function EquipmentPage() {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-2">
                   <label htmlFor="type" className="text-sm font-medium">
-                    Tipo
+                    Type
                   </label>
                   <Input
                     id="type"
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
-                    placeholder="Ex: Notebook, Desktop, Impressora"
+                    placeholder="Ex: Notebook, Desktop, Printer"
                   />
                 </div>
                 <div className="grid gap-2">
                   <label htmlFor="model" className="text-sm font-medium">
-                    Modelo
+                    Model
                   </label>
                   <Input
                     id="model"
@@ -314,11 +314,11 @@ export default function EquipmentPage() {
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-2">
                   <label htmlFor="serialNumber" className="text-sm font-medium">
-                    Número de Série
+                    Serial Number
                   </label>
                   <Input
                     id="serialNumber"
@@ -333,20 +333,20 @@ export default function EquipmentPage() {
                   </label>
                   <Select value={formData.status} onValueChange={handleStatusChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione um status" />
+                      <SelectValue placeholder="Select a status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="operational">Operacional</SelectItem>
-                      <SelectItem value="needs_service">Precisa de Manutenção</SelectItem>
-                      <SelectItem value="decommissioned">Desativado</SelectItem>
+                      <SelectItem value="operational">Operational</SelectItem>
+                      <SelectItem value="needs_service">Needs Service</SelectItem>
+                      <SelectItem value="decommissioned">Decommissioned</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
-              
+
               <div className="grid gap-2">
                 <label htmlFor="notes" className="text-sm font-medium">
-                  Observações
+                  Notes
                 </label>
                 <Textarea
                   id="notes"
@@ -354,15 +354,15 @@ export default function EquipmentPage() {
                   value={formData.notes}
                   onChange={handleInputChange}
                   rows={3}
-                  placeholder="Adicione informações relevantes sobre o equipamento"
+                  placeholder="Add relevant information about the equipment"
                 />
               </div>
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                Cancelar
+                Cancel
               </Button>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit">Save</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -372,15 +372,15 @@ export default function EquipmentPage() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogTitle>Confirm deletion</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir este equipamento? Esta ação não pode ser desfeita.
+              Are you sure you want to delete this equipment? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Excluir
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

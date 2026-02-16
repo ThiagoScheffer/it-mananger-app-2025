@@ -6,13 +6,13 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Download, 
-  Upload, 
-  Shield, 
-  Database, 
-  CheckCircle, 
-  AlertTriangle, 
+import {
+  Download,
+  Upload,
+  Shield,
+  Database,
+  CheckCircle,
+  AlertTriangle,
   XCircle,
   Clock,
   FileText,
@@ -20,10 +20,10 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAppContext } from '@/context/AppContext';
-import { 
-  createBackup, 
-  exportBackupToFile, 
-  importBackupFromFile, 
+import {
+  createBackup,
+  exportBackupToFile,
+  importBackupFromFile,
   validateBackup,
   getAutomaticBackups,
   restoreFromAutomaticBackup,
@@ -31,6 +31,7 @@ import {
   BackupValidationResult,
   BackupImportResult
 } from '@/utils/backupManager';
+import { seedDatabase } from '@/utils/storageManager';
 
 interface BackupStats {
   users: number;
@@ -78,13 +79,15 @@ export default function BackupPage() {
     setBackupStats(stats);
   }, []);
 
+  // ... imports
+
   const handleExport = async () => {
     setIsExporting(true);
     try {
       exportBackupToFile();
-      toast.success('Backup exportado com sucesso!');
+      toast.success('Backup exported successfully!');
     } catch (error) {
-      toast.error('Erro ao exportar backup: ' + (error as Error).message);
+      toast.error('Error exporting backup: ' + (error as Error).message);
     } finally {
       setIsExporting(false);
     }
@@ -106,33 +109,33 @@ export default function BackupPage() {
           const content = e.target?.result as string;
           const backup: BackupData = JSON.parse(content);
           if (!backup || !backup.metadata || !backup.data) {
-            toast.error('Arquivo de backup contém erros de validação - metadata');
-             setValidationResult({
-            isValid: false,
-            errors: ['Formato de arquivo inválido'],
-            warnings: [],
-            stats: null
-          });
+            toast.error('Backup file validation error - metadata');
+            setValidationResult({
+              isValid: false,
+              errors: ['Invalid file format'],
+              warnings: [],
+              stats: null
+            });
 
             return;
           }
 
           setPreviewData(backup);
-          
+
           // Validate backup
           const validation = validateBackup(backup);
           setValidationResult(validation);
-          
+
           if (validation.isValid) {
-            toast.success('Arquivo de backup validado com sucesso!');
+            toast.success('Backup file validated successfully!');
           } else {
-            toast.error('Arquivo de backup contém erros de validação');
+            toast.error('Backup file contains validation errors');
           }
         } catch (error) {
-          toast.error('Arquivo de backup inválido');
+          toast.error('Invalid backup file');
           setValidationResult({
             isValid: false,
-            errors: ['Formato de arquivo inválido'],
+            errors: ['Invalid file format'],
             warnings: [],
             stats: null
           });
@@ -140,7 +143,7 @@ export default function BackupPage() {
       };
       reader.readAsText(file);
     } catch (error) {
-      toast.error('Erro ao ler arquivo: ' + (error as Error).message);
+      toast.error('Error reading file: ' + (error as Error).message);
     }
   };
 
@@ -159,11 +162,11 @@ export default function BackupPage() {
       const result = await importBackupFromFile(selectedFile);
       clearInterval(progressInterval);
       setImportProgress(100);
-      
+
       setImportResult(result);
-      
+
       if (result.success) {
-        toast.success('Backup importado com sucesso!');
+        toast.success('Backup imported successfully!');
         if (!isDryRun) {
           // Refresh application data
           setTimeout(() => {
@@ -172,10 +175,10 @@ export default function BackupPage() {
           }, 1000);
         }
       } else {
-        toast.error('Falha na importação do backup');
+        toast.error('Backup import failed');
       }
     } catch (error) {
-      toast.error('Erro durante importação: ' + (error as Error).message);
+      toast.error('Error during import: ' + (error as Error).message);
       setImportResult({
         success: false,
         errors: [(error as Error).message],
@@ -188,7 +191,7 @@ export default function BackupPage() {
       setIsImporting(false);
     }
   };
-
+  // ...
   const getStatusIcon = (isValid: boolean, hasWarnings: boolean) => {
     if (!isValid) return <XCircle className="h-4 w-4 text-destructive" />;
     if (hasWarnings) return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
@@ -207,12 +210,12 @@ export default function BackupPage() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Backup e Restauração</h1>
-          <p className="text-muted-foreground">Gerencie backups dos dados da aplicação</p>
+          <h1 className="text-3xl font-bold">Backup & Restore</h1>
+          <p className="text-muted-foreground">Manage application data backups</p>
         </div>
         <Badge variant="outline" className="flex items-center gap-2">
           <Database className="h-4 w-4" />
-          {backupStats?.totalRecords || 0} registros
+          {backupStats?.totalRecords || 0} records
         </Badge>
       </div>
 
@@ -221,10 +224,10 @@ export default function BackupPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Database className="h-5 w-5" />
-            Estatísticas dos Dados Atuais
+            Current Data Statistics
           </CardTitle>
           <CardDescription>
-            Visão geral dos dados que serão incluídos no backup
+            Overview of data to be included in the backup
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -232,23 +235,23 @@ export default function BackupPage() {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold">{backupStats.services}</div>
-                <div className="text-sm text-muted-foreground">Serviços</div>
+                <div className="text-sm text-muted-foreground">Services</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold">{backupStats.clients}</div>
-                <div className="text-sm text-muted-foreground">Clientes</div>
+                <div className="text-sm text-muted-foreground">Clients</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold">{backupStats.materials}</div>
-                <div className="text-sm text-muted-foreground">Materiais</div>
+                <div className="text-sm text-muted-foreground">Materials</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold">{backupStats.installments}</div>
-                <div className="text-sm text-muted-foreground">Parcelas</div>
+                <div className="text-sm text-muted-foreground">Installments</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold">{backupStats.expenses}</div>
-                <div className="text-sm text-muted-foreground">Despesas</div>
+                <div className="text-sm text-muted-foreground">Expenses</div>
               </div>
             </div>
           )}
@@ -261,29 +264,29 @@ export default function BackupPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Download className="h-5 w-5" />
-              Exportar Backup
+              Export Backup
             </CardTitle>
             <CardDescription>
-              Criar e baixar backup completo dos dados
+              Create and download a full data backup
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <h4 className="font-medium">Incluído no backup:</h4>
+              <h4 className="font-medium">Included in backup:</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Dados de clientes, serviços e técnicos</li>
-                <li>• Materiais e movimentação de estoque</li>
-                <li>• Parcelas e dados financeiros</li>
-                <li>• Despesas e pedidos</li>
-                <li>• Configurações e metadados</li>
+                <li>• Clients, services, and technicians data</li>
+                <li>• Materials and stock movements</li>
+                <li>• Installments and financial data</li>
+                <li>• Expenses and orders</li>
+                <li>• Settings and metadata</li>
               </ul>
             </div>
-            <Button 
-              onClick={handleExport} 
+            <Button
+              onClick={handleExport}
               disabled={isExporting}
               className="w-full"
             >
-              {isExporting ? 'Exportando...' : 'Exportar Backup'}
+              {isExporting ? 'Exporting...' : 'Export Backup'}
             </Button>
           </CardContent>
         </Card>
@@ -293,16 +296,16 @@ export default function BackupPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Upload className="h-5 w-5" />
-              Importar Backup
+              Import Backup
             </CardTitle>
             <CardDescription>
-              Restaurar dados de um arquivo de backup
+              Restore data from a backup file
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="backup-file" className="text-sm font-medium">
-                Selecionar arquivo de backup:
+                Select backup file:
               </label>
               <input
                 id="backup-file"
@@ -321,7 +324,7 @@ export default function BackupPage() {
                 onChange={(e) => setIsDryRun(e.target.checked)}
               />
               <label htmlFor="dry-run" className="text-sm">
-                Simulação (não alterar dados)
+                Dry Run (Simulation)
               </label>
             </div>
 
@@ -332,29 +335,29 @@ export default function BackupPage() {
                     <FileText className="h-4 w-4" />
                     <strong>{previewData.metadata.version}</strong>
                     <span className="text-muted-foreground">
-                      {new Date(previewData.metadata.exportDate).toLocaleDateString('pt-BR')}
+                      {new Date(previewData.metadata.exportDate).toLocaleDateString()}
                     </span>
                   </div>
                   {validationResult && (
-                    <Badge 
+                    <Badge
                       variant={getStatusColor(validationResult.isValid, validationResult.warnings.length > 0)}
                       className="flex items-center gap-1 w-fit"
                     >
                       {getStatusIcon(validationResult.isValid, validationResult.warnings.length > 0)}
-                      {validationResult.isValid ? 'Válido' : 'Inválido'}
+                      {validationResult.isValid ? 'Valid' : 'Invalid'}
                     </Badge>
                   )}
                 </AlertDescription>
               </Alert>
             )}
 
-            <Button 
+            <Button
               onClick={handleImport}
               disabled={isImporting || !selectedFile || !validationResult?.isValid}
               className="w-full"
               variant={isDryRun ? "outline" : "default"}
             >
-              {isImporting ? 'Importando...' : `${isDryRun ? 'Simular' : 'Importar'} Backup`}
+              {isImporting ? 'Importing...' : `${isDryRun ? 'Simulate' : 'Import'} Backup`}
             </Button>
           </CardContent>
         </Card>
@@ -366,7 +369,7 @@ export default function BackupPage() {
           <CardContent className="pt-6">
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Progresso da importação</span>
+                <span>Import Progress</span>
                 <span>{importProgress}%</span>
               </div>
               <Progress value={importProgress} className="w-full" />
@@ -381,20 +384,20 @@ export default function BackupPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
-              Resultado da Validação
+              Validation Result
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-2">
               {getStatusIcon(validationResult.isValid, validationResult.warnings.length > 0)}
               <span className="font-medium">
-                {validationResult.isValid ? 'Backup válido' : 'Backup inválido'}
+                {validationResult.isValid ? 'Valid Backup' : 'Invalid Backup'}
               </span>
             </div>
 
             {validationResult.errors.length > 0 && (
               <div className="space-y-2">
-                <h4 className="font-medium text-destructive">Erros:</h4>
+                <h4 className="font-medium text-destructive">Errors:</h4>
                 <ul className="space-y-1">
                   {validationResult.errors.map((error, index) => (
                     <li key={index} className="text-sm text-destructive flex items-center gap-2">
@@ -408,7 +411,7 @@ export default function BackupPage() {
 
             {validationResult.warnings.length > 0 && (
               <div className="space-y-2">
-                <h4 className="font-medium text-yellow-600">Avisos:</h4>
+                <h4 className="font-medium text-yellow-600">Warnings:</h4>
                 <ul className="space-y-1">
                   {validationResult.warnings.map((warning, index) => (
                     <li key={index} className="text-sm text-yellow-600 flex items-center gap-2">
@@ -422,7 +425,7 @@ export default function BackupPage() {
 
             {validationResult.stats && (
               <div className="space-y-2">
-                <h4 className="font-medium">Estatísticas do backup:</h4>
+                <h4 className="font-medium">Backup Statistics:</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                   {Object.entries(validationResult.stats).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
@@ -447,7 +450,7 @@ export default function BackupPage() {
               ) : (
                 <XCircle className="h-5 w-5 text-destructive" />
               )}
-              Resultado da Importação
+              Import Result
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -455,9 +458,9 @@ export default function BackupPage() {
               <Alert>
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>
-                  {importResult.isDryRun ? 
-                    'Simulação concluída com sucesso! Nenhum dado foi alterado.' :
-                    'Backup importado com sucesso! A aplicação será recarregada.'
+                  {importResult.isDryRun ?
+                    'Simulation completed successfully! No data was changed.' :
+                    'Backup imported successfully! Application will reload.'
                   }
                 </AlertDescription>
               </Alert>
@@ -465,14 +468,14 @@ export default function BackupPage() {
               <Alert variant="destructive">
                 <XCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Falha na importação do backup. Verifique os erros abaixo.
+                  Backup import failed. Check errors below.
                 </AlertDescription>
               </Alert>
             )}
 
             {Object.keys(importResult.importedCounts).length > 0 && (
               <div className="space-y-2">
-                <h4 className="font-medium">Registros processados:</h4>
+                <h4 className="font-medium">Processed records:</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
                   {Object.entries(importResult.importedCounts).map(([table, count]) => (
                     <div key={table} className="flex justify-between">
@@ -486,7 +489,7 @@ export default function BackupPage() {
 
             {importResult.errors.length > 0 && (
               <div className="space-y-2">
-                <h4 className="font-medium text-destructive">Erros:</h4>
+                <h4 className="font-medium text-destructive">Errors:</h4>
                 <ul className="space-y-1">
                   {importResult.errors.map((error, index) => (
                     <li key={index} className="text-sm text-destructive">
@@ -506,10 +509,10 @@ export default function BackupPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="h-5 w-5" />
-              Backups Automáticos
+              Automatic Backups
             </CardTitle>
             <CardDescription>
-              Backups criados automaticamente pelo sistema
+              Backups automatically created by the system
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -517,30 +520,58 @@ export default function BackupPage() {
               {automaticBackups.slice(0, 5).map((backup) => (
                 <div key={backup.key} className="flex items-center justify-between p-2 border rounded">
                   <span className="text-sm">
-                    {new Date(backup.date).toLocaleDateString('pt-BR')}
+                    {new Date(backup.date).toLocaleDateString()}
                   </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      const result = restoreFromAutomaticBackup(backup.key);
-                      if (result.success) {
-                        toast.success('Backup automático restaurado!');
-                        setTimeout(() => window.location.reload(), 1000);
-                      } else {
-                        toast.error('Erro ao restaurar backup: ' + result.errors.join(', '));
-                      }
-                    }}
-                  >
-                    <RotateCcw className="h-4 w-4" />
-                    Restaurar
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const result = restoreFromAutomaticBackup(backup.key);
+                        if (result.success) {
+                          toast.success('Automatic backup restored!');
+                          setTimeout(() => window.location.reload(), 1000);
+                        } else {
+                          toast.error('Error restoring backup: ' + result.errors.join(', '));
+                        }
+                      }}
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      Restore
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
       )}
+
+      {/* Development Tools */}
+      <Card className="border-destructive/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertTriangle className="h-5 w-5" />
+            Danger Zone
+          </CardTitle>
+          <CardDescription>
+            Tools for generating test data (WARNING: Replaces existing data)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              if (window.confirm('WARNING: This will erase ALL current data and replace it with randomly generated test data. This action cannot be undone. Do you want to continue?')) {
+                seedDatabase();
+              }
+            }}
+            className="w-full"
+          >
+            Generate Test Data (Mock Data)
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }

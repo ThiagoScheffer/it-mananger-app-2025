@@ -16,7 +16,7 @@ interface TechnicianDialogProps {
 
 export default function TechnicianDialog({ open, setOpen, technician }: TechnicianDialogProps) {
   const { addTechnician, updateTechnician } = useAppContext();
-  
+
   const [formData, setFormData] = useState({
     name: "",
     specialty: "",
@@ -50,12 +50,12 @@ export default function TechnicianDialog({ open, setOpen, technician }: Technici
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim()) {
-      toast.error("O nome do técnico é obrigatório");
+      toast.error("Technician name is required");
       return;
     }
-    
+
     if (technician) {
       updateTechnician({
         ...technician,
@@ -63,16 +63,16 @@ export default function TechnicianDialog({ open, setOpen, technician }: Technici
         specialty: formData.specialty,
         status: formData.status
       });
-      toast.success("Técnico atualizado com sucesso");
+      toast.success("Technician updated successfully");
     } else {
       addTechnician({
         name: formData.name,
         specialty: formData.specialty,
         status: formData.status
       });
-      toast.success("Técnico adicionado com sucesso");
+      toast.success("Technician added successfully");
     }
-    
+
     setOpen(false);
   };
 
@@ -80,13 +80,13 @@ export default function TechnicianDialog({ open, setOpen, technician }: Technici
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{technician ? "Editar Técnico" : "Novo Técnico"}</DialogTitle>
+          <DialogTitle>{technician ? "Edit Technician" : "New Technician"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <label htmlFor="name" className="text-sm font-medium">
-                Nome*
+                Name*
               </label>
               <Input
                 id="name"
@@ -98,7 +98,7 @@ export default function TechnicianDialog({ open, setOpen, technician }: Technici
             </div>
             <div className="grid gap-2">
               <label htmlFor="specialty" className="text-sm font-medium">
-                Especialidade
+                Specialty
               </label>
               <Input
                 id="specialty"
@@ -113,20 +113,20 @@ export default function TechnicianDialog({ open, setOpen, technician }: Technici
               </label>
               <Select value={formData.status} onValueChange={handleStatusChange}>
                 <SelectTrigger id="status">
-                  <SelectValue placeholder="Selecione o status" />
+                  <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="active">Ativo</SelectItem>
-                  <SelectItem value="inactive">Inativo</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancelar
+              Cancel
             </Button>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit">Save</Button>
           </DialogFooter>
         </form>
       </DialogContent>

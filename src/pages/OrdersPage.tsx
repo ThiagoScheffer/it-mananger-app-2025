@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Pencil, Trash2,SearchIcon } from "lucide-react";
+import { Pencil, Trash2, SearchIcon } from "lucide-react";
 import OrderDialog from "@/components/dialogs/OrderDialog";
 import {
     AlertDialog,
@@ -17,7 +17,7 @@ import {
 import { StatusBadge } from "@/components/ui/status-badge";
 import { toast } from "sonner";
 import { Badge } from "../components/ui/badge";
-import {parse, isValid, differenceInDays} from 'date-fns';
+import { parse, isValid, differenceInDays } from 'date-fns';
 import { date } from "zod";
 
 // Helper functions to fetch related data by ID (simulate SQL joins)
@@ -80,7 +80,7 @@ export default function OrdersPage() {
     const confirmDelete = () => {
         if (orderToDelete) {
             deleteOrder(orderToDelete);
-            toast.success("Encomenda excluída com sucesso");
+            toast.success("Order deleted successfully");
             setDeleteDialogOpen(false);
         }
     };
@@ -130,38 +130,38 @@ export default function OrdersPage() {
     };
 
     const statusLabels: Record<string, string> = {
-        delivered: "Entregue",
-        inRoute: "Em Rota",
-        paid: "Pago",
+        delivered: "Delivered",
+        inRoute: "In Route",
+        paid: "Paid",
     };
 
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Encomendas de Materiais</h1>
-                <Button  className="anibtn-drawstroke" onClick={handleAddOrder}>+ Nova Encomenda</Button>
+                <h1 className="text-2xl font-bold">Materials Orders</h1>
+                <Button className="anibtn-drawstroke" onClick={handleAddOrder}>+ New Order</Button>
             </div>
 
             <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-semibold mb-4">Gerenciamento de Encomendas</h2>
+                <h2 className="text-xl font-semibold mb-4">Order Management</h2>
 
                 <div className="mb-6 relative">
-                     <SearchIcon
-        className="pointer-events-none absolute left-3 top-5 h-[16px] w-[16px] -translate-y-1/2 text-gray-400 transition-colors duration-200 peer-focus:text-gray-600 dark:peer-focus:text-gray-300"
-    />
-                    <Input 
-                        placeholder="Buscar por código, loja..."
+                    <SearchIcon
+                        className="pointer-events-none absolute left-3 top-5 h-[16px] w-[16px] -translate-y-1/2 text-gray-400 transition-colors duration-200 peer-focus:text-gray-600 dark:peer-focus:text-gray-300"
+                    />
+                    <Input
+                        placeholder="Search by code, store..."
                         value={searchQuery}
                         onChange={handleSearchChange}
                         className="pl-10"
                     />
-                    
+
                     <div className="mt-4 flex flex-wrap gap-2">
                         <Button
                             variant={filterStatus === null ? "default" : "outline"}
                             onClick={() => setFilterStatus(null)}
                         >
-                            Todos
+                            All
                         </Button>
                         {["delivered", "inRoute", "paid"].map((status) => (
                             <Button
@@ -180,14 +180,14 @@ export default function OrdersPage() {
                     <table className="w-full border-collapse">
                         <thead>
                             <tr className="bg-gray-50 text-left">
-                                <th className="p-3 border-b">Código do Pedido</th>
-                                <th className="p-3 border-b">Loja</th>
-                                <th className="p-3 border-b">Tempo Estimado</th>
-                                <th className="p-3 border-b">Serviço Relacionado</th>
+                                <th className="p-3 border-b">Order Code</th>
+                                <th className="p-3 border-b">Store</th>
+                                <th className="p-3 border-b">Estimated Time</th>
+                                <th className="p-3 border-b">Related Service</th>
                                 <th className="p-3 border-b">Status</th>
-                                <th className="p-3 border-b">Quantidade</th>
-                                <th className="p-3 border-b">Materiais</th>
-                                <th className="p-3 border-b">Ações</th>
+                                <th className="p-3 border-b">Quantity</th>
+                                <th className="p-3 border-b">Materials</th>
+                                <th className="p-3 border-b">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -202,12 +202,12 @@ export default function OrdersPage() {
                                             </span>
                                             {orderCodeGroupMap[order.orderCode] && (
                                                 <Badge variant="outline" className={getOrderCodeColor(order.orderCode)}>
-                                                    Grupo {orderCodeGroupMap[order.orderCode]}
+                                                    Group {orderCodeGroupMap[order.orderCode]}
                                                 </Badge>
                                             )}
                                         </td>
                                         <td className="p-3">{order.store}</td>
-                                         <td className="p-3">
+                                        <td className="p-3">
                                             <span className={getDateColor(order.estimatedDeliveryTime)}>
                                                 {order.estimatedDeliveryTime}
                                             </span>
@@ -226,7 +226,7 @@ export default function OrdersPage() {
                                                             key={om.materialId}
                                                             className="bg-gray-100 px-2 py-1 rounded text-sm"
                                                         >
-                                                          {material ? material.type : `Unknown Type (${om.materialId})`}  {material ? material.model : `Unknown Material (${om.materialId})`}
+                                                            {material ? material.type : `Unknown Type (${om.materialId})`}  {material ? material.model : `Unknown Material (${om.materialId})`}
                                                         </span>
                                                     );
                                                 })}
@@ -258,7 +258,7 @@ export default function OrdersPage() {
                             {filteredOrders.length === 0 && (
                                 <tr>
                                     <td colSpan={8} className="p-8 text-center text-gray-500">
-                                        Nenhuma encomenda encontrada
+                                        No orders found
                                     </td>
                                 </tr>
                             )}
@@ -276,15 +276,15 @@ export default function OrdersPage() {
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                        <AlertDialogTitle>Confirm deletion</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Tem certeza que deseja excluir esta encomenda? Esta ação não pode ser desfeita.
+                            Are you sure you want to delete this order? This action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                            Excluir
+                            Delete
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

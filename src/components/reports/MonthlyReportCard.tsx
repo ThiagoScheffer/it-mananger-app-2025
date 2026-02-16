@@ -12,15 +12,15 @@ export function MonthlyReportCard({ openMonthlyReport }: MonthlyReportCardProps)
       <CardHeader>
         <CardTitle className="flex items-center">
           <Calendar className="mr-2 h-5 w-5" />
-          Relatório Mensal de Serviços
+          Monthly Service Report
         </CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground mb-4">
-          Gere um relatório detalhado dos serviços por mês, incluindo valores pendentes e não pagos.
+          Generate a detailed service report by month, including pending and unpaid values.
         </p>
         <Button className="anibtn-drawstrokelong" onClick={openMonthlyReport}>
-          Gerar Relatório Mensal
+          Generate Monthly Report
         </Button>
       </CardContent>
     </Card>

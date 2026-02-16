@@ -25,72 +25,72 @@ interface MaterialDialogProps {
 }
 
 type MaterialFormData = {
-    type: string;
-    model: string;
-    description: string;
-    purchaseSites: string;
-    purchasePrice: number;
-    sellingPrice: number;
-    returnValue: number; // This will be calculated later
-    status: "available" | "unavailable";
-    stock: number;
+  type: string;
+  model: string;
+  description: string;
+  purchaseSites: string;
+  purchasePrice: number;
+  sellingPrice: number;
+  returnValue: number; // This will be calculated later
+  status: "available" | "unavailable";
+  stock: number;
 };
 
 export default function MaterialDialog({ open, setOpen, material }: MaterialDialogProps) {
   const { addMaterial, updateMaterial, materials } = useAppContext();
   const [typeCommandOpen, setTypeCommandOpen] = useState(false);
-    const [typeSearch, setTypeSearch] = useState("");
-    const [formData, setFormData] = useState<MaterialFormData>({
+  const [typeSearch, setTypeSearch] = useState("");
+  const [formData, setFormData] = useState<MaterialFormData>({
     type: "",
     model: "",
     description: "",
     purchaseSites: "",
     purchasePrice: 0,
-        sellingPrice: 0,
-        returnValue: 0, // This will be calculated later
+    sellingPrice: 0,
+    returnValue: 0, // This will be calculated later
     status: "available" as "available" | "unavailable",
     stock: 0
   });
-    const [isCheckingLink, setIsCheckingLink] = useState(false);
+  const [isCheckingLink, setIsCheckingLink] = useState(false);
 
-    // Function to check if URL exists
-    const checkLinkAvailability = async (url: string) => {
-        if (!url) return;
+  // Function to check if URL exists
+  const checkLinkAvailability = async (url: string) => {
+    if (!url) return;
 
-        try {
-            setIsCheckingLink(true);
+    try {
+      setIsCheckingLink(true);
 
-            // Add https if missing
-            const formattedUrl = url.startsWith('http') ? url : `https://${url}`;
+      // Add https if missing
+      const formattedUrl = url.startsWith('http') ? url : `https://${url}`;
 
-            const response = await fetch(formattedUrl, {
-                method: 'HEAD', // Only request headers, not full content
-                mode: 'no-cors' // Bypass CORS for this demo (note: limited reliability)
-            });
+      const response = await fetch(formattedUrl, {
+        method: 'HEAD', // Only request headers, not full content
+        mode: 'no-cors' // Bypass CORS for this demo (note: limited reliability)
+      });
 
-            // If we get here, the request didn't fail completely
-            setFormData(prev => ({
-                ...prev,
-                status: 'available'
-            }));
-        } catch (error) {
-            setFormData(prev => ({
-                ...prev,
-                status: 'unavailable'
-            }));
-        } finally {
-            setIsCheckingLink(false);
-        }
-    };
+      // If we get here, the request didn't fail completely
+      setFormData(prev => ({
+        ...prev,
+        status: 'available'
+      }));
+    } catch (error) {
+      setFormData(prev => ({
+        ...prev,
+        status: 'unavailable'
+      }));
+    } finally {
+      setIsCheckingLink(false);
+    }
+  };
 
-    // Debounced version to avoid too many requests
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            checkLinkAvailability(formData.purchaseSites);
-        }, 1000); // Wait 1 second after last change
+  // Debounced version to avoid too many requests
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      checkLinkAvailability(formData.purchaseSites);
+    }, 1000); // Wait 1 second after last change
 
-        return () => clearTimeout(timer);
-    }, [formData.purchaseSites]);
+    return () => clearTimeout(timer);
+  }, [formData.purchaseSites]);
 
 
   useEffect(() => {
@@ -101,8 +101,8 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
         description: material.description || "",
         purchaseSites: material.purchaseSites || "",
         purchasePrice: material.purchasePrice,
-          sellingPrice: material.sellingPrice,
-          returnValue: material.sellingPrice - material.purchasePrice,
+        sellingPrice: material.sellingPrice,
+        returnValue: material.sellingPrice - material.purchasePrice,
         status: material.status || "available",
         stock: material.stock || 0
       });
@@ -113,8 +113,8 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
         description: "",
         purchaseSites: "",
         purchasePrice: 0,
-          sellingPrice: 0,
-          returnValue: 0, 
+        sellingPrice: 0,
+        returnValue: 0,
         status: "available",
         stock: 0
       });
@@ -123,7 +123,7 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
+
     if (name === "purchasePrice" || name === "sellingPrice" || name === "stock") {
       setFormData((prev) => ({ ...prev, [name]: parseFloat(value) || 0 }));
     } else {
@@ -144,23 +144,23 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
   };
 
   const handleOpenTypeCommand = () => {
-      setTypeCommandOpen(true);
+    setTypeCommandOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.type.trim()) {
-      toast.error("O tipo do material é obrigatório");
+      toast.error("Material type is required");
       return;
     }
-    
+
     if (!formData.model.trim()) {
-      toast.error("O modelo do material é obrigatório");
+      toast.error("Material model is required");
       return;
     }
-    
-      // nao usado, mas mantido para referencia futura
+
+    // nao usado, mas mantido para referencia futura
     /*const returnValue = formData.sellingPrice - formData.purchasePrice;
     const calculateReturnValue = (material: typeof materials[0]) => {
         if (!material.purchasePrice || !material.sellingPrice) return 0;
@@ -181,7 +181,7 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
         status: formData.status,
         stock: formData.stock
       });
-      toast.success("Material atualizado com sucesso");
+      toast.success("Material updated successfully");
     } else {
       // For new material, don't include returnValue as it's calculated in addMaterial
       addMaterial({
@@ -194,9 +194,9 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
         status: formData.status,
         stock: formData.stock
       });
-      toast.success("Material adicionado com sucesso");      
+      toast.success("Material added successfully");
     }
-    
+
     setOpen(false);
   };
 
@@ -205,31 +205,31 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{material ? "Editar Material" : "Novo Material"}</DialogTitle>
+            <DialogTitle>{material ? "Edit Material" : "New Material"}</DialogTitle>
             <DialogDescription>
-              {material ? "Edite os detalhes do material abaixo." : "Preencha os detalhes do novo material abaixo."}
+              {material ? "Edit material details below." : "Fill in the new material details below."}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <label htmlFor="type" className="text-sm font-medium">
-                  Tipo* (clique para sugestões)
+                  Type* (click for suggestions)
                 </label>
                 <Input
-                    id="type"
-                    name="type"
-                    value={formData.type}
-                    onChange={handleChange}
-                    onClick={handleOpenTypeCommand}
-                   // onFocus={handleOpenTypeCommand} // Also open on focus
-                    required
-                    className="cursor-pointer"
+                  id="type"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  onClick={handleOpenTypeCommand}
+                  // onFocus={handleOpenTypeCommand} // Also open on focus
+                  required
+                  className="cursor-pointer"
                 />
               </div>
               <div className="grid gap-2">
                 <label htmlFor="model" className="text-sm font-medium">
-                  Modelo*
+                  Model*
                 </label>
                 <Input
                   id="model"
@@ -241,7 +241,7 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
               </div>
               <div className="grid gap-2">
                 <label htmlFor="description" className="text-sm font-medium">
-                  Descrição
+                  Description
                 </label>
                 <Input
                   id="description"
@@ -252,31 +252,31 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
               </div>
               <div className="grid gap-2">
                 <label htmlFor="purchaseSites" className="text-sm font-medium">
-                  Sites de Compra
+                  Purchase Sites
                 </label>
                 <Input
                   id="purchaseSites"
                   name="purchaseSites"
                   value={formData.purchaseSites}
                   onChange={handleChange}
-                 />
+                />
                 {/* Display clickable link if purchaseSites has a value */}
                 {formData.purchaseSites && (
-                    <a
-                        href={formData.purchaseSites.startsWith('http') ? formData.purchaseSites : `https://${formData.purchaseSites}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
-                    >
-                        {formData.purchaseSites}
-                    </a>
+                  <a
+                    href={formData.purchaseSites.startsWith('http') ? formData.purchaseSites : `https://${formData.purchaseSites}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {formData.purchaseSites}
+                  </a>
 
                 )}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <label htmlFor="purchasePrice" className="text-sm font-medium">
-                    Valor de Compra (R$)*
+                    Purchase Price ($)*
                   </label>
                   <Input
                     id="purchasePrice"
@@ -290,7 +290,7 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
                 </div>
                 <div className="grid gap-2">
                   <label htmlFor="sellingPrice" className="text-sm font-medium">
-                    Valor de Venda (R$)*
+                    Selling Price ($)*
                   </label>
                   <Input
                     id="sellingPrice"
@@ -306,7 +306,7 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <label htmlFor="stock" className="text-sm font-medium">
-                    Estoque
+                    Stock
                   </label>
                   <Input
                     id="stock"
@@ -322,11 +322,11 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
                   </label>
                   <Select value={formData.status} onValueChange={handleStatusChange} disabled={isCheckingLink}>
                     <SelectTrigger id="status">
-                      <SelectValue placeholder="Selecione o status" />
+                      <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="available">Disponível</SelectItem>
-                      <SelectItem value="unavailable">Indisponível</SelectItem>
+                      <SelectItem value="available">Available</SelectItem>
+                      <SelectItem value="unavailable">Unavailable</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -334,41 +334,41 @@ export default function MaterialDialog({ open, setOpen, material }: MaterialDial
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                Cancelar
+                Cancel
               </Button>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit">Save</Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
 
-          <CommandDialog open={typeCommandOpen} onOpenChange={setTypeCommandOpen}>
-              <CommandInput
-                  placeholder="Buscar tipos de materiais existentes..."
-                  value={typeSearch}
-                  onValueChange={setTypeSearch}
-                  onKeyDown={e => {
-                      if (e.key === 'Enter') {
-                          const matches = uniqueTypes.filter(t => t.toLowerCase().includes(typeSearch.toLowerCase()));
-                          if (matches.length === 0 && typeSearch.trim()) {
-                              handleTypeSelect(typeSearch.trim());
-                          }
-                      }
-                  }}
-              />
-              <CommandList className="max-h-[300px] overflow-y-auto">
-                  <CommandEmpty>Nenhum tipo encontrado. Pressione Enter para criar "{typeSearch}".</CommandEmpty>
-                  <CommandGroup heading="Tipos de Materiais Existentes">
-                      {uniqueTypes
-                          .sort((a, b) => a.localeCompare(b)) // Sort types alphabetically
-                          .map(type => (
-                              <CommandItem key={type} onSelect={() => handleTypeSelect(type)} value={type}>
-                                  {type}
-                              </CommandItem>
-                          ))}
-                  </CommandGroup>
-              </CommandList>
-          </CommandDialog>
+      <CommandDialog open={typeCommandOpen} onOpenChange={setTypeCommandOpen}>
+        <CommandInput
+          placeholder="Search existing material types..."
+          value={typeSearch}
+          onValueChange={setTypeSearch}
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              const matches = uniqueTypes.filter(t => t.toLowerCase().includes(typeSearch.toLowerCase()));
+              if (matches.length === 0 && typeSearch.trim()) {
+                handleTypeSelect(typeSearch.trim());
+              }
+            }
+          }}
+        />
+        <CommandList className="max-h-[300px] overflow-y-auto">
+          <CommandEmpty>No type found. Press Enter to create "{typeSearch}".</CommandEmpty>
+          <CommandGroup heading="Existing Material Types">
+            {uniqueTypes
+              .sort((a, b) => a.localeCompare(b)) // Sort types alphabetically
+              .map(type => (
+                <CommandItem key={type} onSelect={() => handleTypeSelect(type)} value={type}>
+                  {type}
+                </CommandItem>
+              ))}
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
     </>
   );
 }

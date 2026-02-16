@@ -237,7 +237,7 @@ export function getServiceTypes(): ServiceTypeOption[] {
 
     // Fallback to old format (just names)
     const customNames = safeParse<string[]>(localStorage.getItem(STORAGE_KEYS.CUSTOM_SERVICE_TYPES), []);
-    
+
     // Initialize defaults if nothing exists
     if (customNames.length === 0) {
         saveServiceTypesFull(defaultServiceTypes);
@@ -263,7 +263,7 @@ export function saveServiceTypesFull(types: ServiceTypeOption[]): void {
     // Save only custom types (exclude defaults)
     const customTypes = types.filter(t => !defaultServiceTypes.some(d => d.name === t.name));
     localStorage.setItem(STORAGE_KEYS.SERVICE_TYPES_FULL, JSON.stringify(customTypes));
-    
+
     // Also save names for backward compatibility
     const allNames = types.map(t => t.name);
     localStorage.setItem(STORAGE_KEYS.CUSTOM_SERVICE_TYPES, JSON.stringify(allNames));
@@ -333,7 +333,7 @@ export function migrateDataToNewStructure(): boolean {
         saveAppointments(newData.appointments);
         saveServiceTypes(newData.customServiceTypes);
 
-        if (newData.financialData) saveFinancialData(newData.financialData);       
+        if (newData.financialData) saveFinancialData(newData.financialData);
 
         saveMetaData({
             format: 'new',
@@ -353,7 +353,7 @@ export function migrateDataToNewStructure(): boolean {
 // Load all data with migration handling
 export function loadInitialData() {
     console.log('Loading initial data storage...');
-    
+
     // Check if we need to migrate to normalized structure
     const metaData = getMetaData();
     if (!metaData || metaData.format !== 'normalized') {
@@ -384,5 +384,28 @@ export function loadInitialData() {
         financialData: getFinancialData(),
         customServiceTypes: getServiceTypes().map(t => t.name),
         metaData: getMetaData(),
-    };    
+    };
 }
+
+import { generateMockData } from './mockData';
+
+export const seedDatabase = () => {
+    const data = generateMockData();
+    console.log('Seeding database with mock data...', data);
+
+    saveClients(data.clients);
+    saveTechnicians(data.technicians);
+    saveMaterials(data.materials);
+    saveServices(data.services);
+    saveServiceTechnicians(data.serviceTechnicians);
+    saveServiceMaterials(data.serviceMaterials);
+    saveExpenses(data.expenses);
+    savePayments(data.payments);
+
+    if (data.financialData) {
+        saveFinancialData(data.financialData);
+    }
+
+    // Force reload of metadata or just let the app reload
+    window.location.reload();
+};

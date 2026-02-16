@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FinancialData, FinancialSummary, MonthlyData } from '@/types/financial';
 import { Service, Expense, Installment } from '@/types';
 import { getFinancialData, saveFinancialData, getServiceTypes } from '@/utils/storageManager';
-import { getServiceMaterialsByServiceId, getMaterialById,getInstallmentsByServiceId } from '@/utils/dataHelpers';
+import { getServiceMaterialsByServiceId, getMaterialById, getInstallmentsByServiceId } from '@/utils/dataHelpers';
 import { useAppContext } from '@/context/AppContext';
 
 // Helper functions for filtering by month/year
@@ -22,15 +22,15 @@ const filterExpensesByMonth = (expenses: Expense[], month: number, year: number)
 };
 
 export function getRemainingInstallments(serviceId: string): Installment[] {
-  const installments = getInstallmentsByServiceId(serviceId);
-  return installments.filter(installment => 
-    installment.status !== 'paid'
-  );
+    const installments = getInstallmentsByServiceId(serviceId);
+    return installments.filter(installment =>
+        installment.status !== 'paid'
+    );
 }
 // Function to get the total amount paid for a service
 export function getPaidAmount(serviceId: string): number {
-  const payments = getInstallmentsByServiceId(serviceId);
-  return payments.reduce((sum, payment) => sum + payment.amount, 0);
+    const payments = getInstallmentsByServiceId(serviceId);
+    return payments.reduce((sum, payment) => sum + payment.amount, 0);
 }
 
 export function getInstallmentPaidAmount(serviceId: string): number {
@@ -78,7 +78,7 @@ const calculateServicesProfit = (services: Service[], onlyPaid: boolean = false)
 
         const totalValue = serviceTypesPrice + service.servicePrice + service.pickupDeliveryPrice + materialsSellPrice;
 
-        return sum + ( totalValue - materialCost);
+        return sum + (totalValue - materialCost);
     }, 0);
 };
 
@@ -86,31 +86,31 @@ const calculateExpensesTotal = (expenses: Expense[], onlyPaid: boolean = false) 
     const filteredExpenses = onlyPaid ? expenses.filter(e => e.isPaid) : expenses;
     return filteredExpenses.reduce((sum, expense) => sum + expense.value, 0);
 };
-   
+
 const generateMonthlyFinancialDataHelper = (services: Service[], expenses: Expense[]): MonthlyData[] => {
     const monthlyData: MonthlyData[] = [];
     const currentDate = new Date();
-    
+
     // Generate data for the last 12 months
     for (let i = 11; i >= 0; i--) {
         const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
         const month = date.getMonth();
         const year = date.getFullYear();
-        
+
         // Use service.date instead of service.createdAt
         const monthServices = services.filter(service => {
             const serviceDate = new Date(service.date);
             return serviceDate.getMonth() === month && serviceDate.getFullYear() === year;
         });
-        
+
         const monthExpenses = expenses.filter(expense => {
             const expenseDate = new Date(expense.dueDate);
             return expenseDate.getMonth() === month && expenseDate.getFullYear() === year;
         });
-        
+
         const paidServices = monthServices.filter(s => s.paymentStatus === 'paid');
         const revenue = calculateServicesRevenue(paidServices, true);
-        
+
         // Calculate material costs for paid services
         const materialCosts = paidServices.reduce((sum, service) => {
             const serviceMaterials = getServiceMaterialsByServiceId(service.id);
@@ -119,7 +119,7 @@ const generateMonthlyFinancialDataHelper = (services: Service[], expenses: Expen
                 return matSum + (material ? material.purchasePrice * sm.quantity : 0);
             }, 0);
         }, 0);
-        
+
         // Get service types
         const serviceTypeOptions = getServiceTypes();
         const serviceTypesPrice = paidServices.reduce((acc, service) => {
@@ -131,14 +131,14 @@ const generateMonthlyFinancialDataHelper = (services: Service[], expenses: Expen
 
         const paidExpenses = calculateExpensesTotal(monthExpenses, true);
         const totalExpenses = paidExpenses + materialCosts;
-        
+
         monthlyData.push({
             month: date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }),
             revenue,
             expenses: totalExpenses
         });
     }
-    
+
     return monthlyData;
 };
 
@@ -177,10 +177,10 @@ export function useFinancials() {
 
     const updateAccountBalance = (value: number, operation: 'add' | 'subtract') => {
         setFinancialData(prev => {
-            const newBalance = operation === 'add' 
-                ? prev.summary.balance + value 
+            const newBalance = operation === 'add'
+                ? prev.summary.balance + value
                 : prev.summary.balance - value;
-            
+
             const updatedData = {
                 ...prev,
                 summary: {
@@ -188,7 +188,7 @@ export function useFinancials() {
                     balance: newBalance
                 }
             };
-            
+
             saveFinancialData(updatedData);
             return updatedData;
         });
@@ -203,7 +203,7 @@ export function useFinancials() {
                     balance: newBalance
                 }
             };
-            
+
             saveFinancialData(updatedData);
             return updatedData;
         });
@@ -303,8 +303,8 @@ export function useFinancials() {
                 profitMargin,
                 pendingPayments,
                 completedServices: paidServices.length,
-                avgServiceValue: paidServices.length > 0 
-                    ? paidServices.reduce((sum, s) => sum + s.totalValue, 0) / paidServices.length 
+                avgServiceValue: paidServices.length > 0
+                    ? paidServices.reduce((sum, s) => sum + s.totalValue, 0) / paidServices.length
                     : 0,
                 nextMonthProjectedRevenue: nextProjectedRevenue,
                 nextMonthProjectedExpenses: nextProjectedExpenses,

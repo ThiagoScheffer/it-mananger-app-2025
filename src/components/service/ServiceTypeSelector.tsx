@@ -64,7 +64,7 @@ export default function ServiceTypeSelector({
         onAddType(customType.trim());
         onUpdateCalculations();
 
-        toast.success("Novo tipo de serviço adicionado");
+        toast.success("New service type added");
     };
 
     const handleSelectType = (typeName: string) => {
@@ -86,7 +86,7 @@ export default function ServiceTypeSelector({
     return (
         <div className="grid gap-2">
             <label className="text-sm font-medium">
-                Tipos de Serviço
+                Service Types
             </label>
             <div className="flex space-x-2">
                 <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -97,14 +97,14 @@ export default function ServiceTypeSelector({
                             aria-expanded={isOpen}
                             className="w-full justify-between"
                         >
-                            Selecionar tipo de serviço
+                            Select service type
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[400px] p-0" align="start" onOpenAutoFocus={(e) => e.preventDefault()}>
                         <Command>
                             <CommandInput
-                                placeholder="Buscar tipo de serviço..."
+                                placeholder="Search service type..."
                                 value={searchQuery}
                                 onValueChange={setSearchQuery}
                             />
@@ -117,18 +117,18 @@ export default function ServiceTypeSelector({
                                 <CommandEmpty>
                                     <div className="p-4 border-t">
                                         <p className="text-sm text-muted-foreground mb-2">
-                                            Tipo não encontrado. Adicione um novo:
+                                            Type not found. Add new:
                                         </p>
                                         <div className="flex gap-2 mb-2">
                                             <Input
-                                                placeholder="Nome do serviço"
+                                                placeholder="Service name"
                                                 value={customType}
                                                 onChange={(e) => setCustomType(e.target.value)}
                                                 className="flex-grow"
                                             />
                                             <Input
                                                 type="number"
-                                                placeholder="Preço"
+                                                placeholder="Price"
                                                 value={customPrice}
                                                 onChange={(e) => setCustomPrice(e.target.value === "" ? "" : Number(e.target.value))}
                                                 className="w-24"
@@ -140,11 +140,11 @@ export default function ServiceTypeSelector({
                                             disabled={!customType.trim() || !customPrice || Number(customPrice) <= 0}
                                         >
                                             <Plus className="mr-1 h-4 w-4" />
-                                            Adicionar
+                                            Add
                                         </Button>
                                     </div>
                                 </CommandEmpty>
-                                <CommandGroup heading="Tipos de Serviço">
+                                <CommandGroup heading="Service Types">
                                     {filteredServiceTypes.map((type) => (
                                         <CommandItem
                                             key={type.name}
@@ -165,18 +165,18 @@ export default function ServiceTypeSelector({
                                 </CommandGroup>
                                 <div className="p-4 border-t">
                                     <p className="text-sm text-muted-foreground mb-2">
-                                        Adicionar novo tipo de serviço:
+                                        Add new service type:
                                     </p>
                                     <div className="flex gap-2 mb-2">
                                         <Input
-                                            placeholder="Nome do serviço"
+                                            placeholder="Service name"
                                             value={customType}
                                             onChange={(e) => setCustomType(e.target.value)}
                                             className="flex-grow"
                                         />
                                         <Input
                                             type="number"
-                                            placeholder="Preço"
+                                            placeholder="Price"
                                             value={customPrice}
                                             onChange={(e) => setCustomPrice(e.target.value === "" ? "" : Number(e.target.value))}
                                             className="w-24"
@@ -188,7 +188,7 @@ export default function ServiceTypeSelector({
                                         disabled={!customType.trim() || !customPrice || Number(customPrice) <= 0}
                                     >
                                         <Plus className="mr-1 h-4 w-4" />
-                                        Adicionar
+                                        Add
                                     </Button>
                                 </div>
                             </CommandList>
@@ -225,7 +225,7 @@ export default function ServiceTypeSelector({
                     </div>
                 ) : (
                     <div className="text-center text-sm text-muted-foreground p-2">
-                        Nenhum tipo de serviço adicionado
+                        No service types added
                     </div>
                 )}
             </div>

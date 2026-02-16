@@ -47,14 +47,14 @@ export default function ClientsPage() {
   const confirmDelete = () => {
     if (clientToDelete) {
       deleteClient(clientToDelete);
-      toast.success("Cliente excluído com sucesso");
+      toast.success("Client deleted successfully");
       setDeleteDialogOpen(false);
     }
   };
 
   // Sort clients alphabetically by name and then filter
   const sortedClients = [...clients].sort((a, b) => a.name.localeCompare(b.name));
-  
+
   const filteredClients = sortedClients.filter(
     (client) =>
       client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -66,16 +66,16 @@ export default function ClientsPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Clientes</h1>
-        <Button className="anibtn-drawstroke" onClick={handleAddClient}>+ Novo Cliente</Button>
+        <h1 className="text-2xl font-bold">Clients</h1>
+        <Button className="anibtn-drawstroke" onClick={handleAddClient}>+ New Client</Button>
       </div>
 
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold mb-4">Gerenciamento de Clientes</h2>
-        
+        <h2 className="text-xl font-semibold mb-4">Client Management</h2>
+
         <div className="mb-6 relative">
           <Input
-            placeholder="Buscar por nome, email..."
+            placeholder="Search by name, email..."
             value={searchQuery}
             onChange={handleSearchChange}
             className="pl-10"
@@ -91,11 +91,11 @@ export default function ClientsPage() {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-50 text-left">
-                <th className="p-3 border-b">Nome</th>
+                <th className="p-3 border-b">Name</th>
                 <th className="p-3 border-b">Email</th>
-                <th className="p-3 border-b">Endereço</th>
-                <th className="p-3 border-b">Tipo de Trabalho</th>
-                <th className="p-3 border-b">Ações</th>
+                <th className="p-3 border-b">Address</th>
+                <th className="p-3 border-b">Values</th>
+                <th className="p-3 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -126,11 +126,11 @@ export default function ClientsPage() {
                   </td>
                 </tr>
               ))}
-              
+
               {filteredClients.length === 0 && (
                 <tr>
                   <td colSpan={5} className="p-8 text-center text-gray-500">
-                    Nenhum cliente encontrado
+                    No clients found
                   </td>
                 </tr>
               )}
@@ -148,15 +148,15 @@ export default function ClientsPage() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogTitle>Confirm deletion</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.
+              Are you sure you want to delete this client? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Excluir
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

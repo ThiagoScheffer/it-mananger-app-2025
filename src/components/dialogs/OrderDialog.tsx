@@ -129,17 +129,17 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
         e.preventDefault();
 
         if (!formData.orderCode.trim()) {
-            toast.error("O código do pedido é obrigatório");
+            toast.error("Order code is required");
             return;
         }
 
         if (!formData.store.trim()) {
-            toast.error("A loja é obrigatória");
+            toast.error("Store is required");
             return;
         }
 
         if (!selectedMaterials.length) {
-            toast.error("Adicione pelo menos um material");
+            toast.error("Add at least one material");
             return;
         }
 
@@ -163,10 +163,10 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
                 ...order,
                 ...orderData
             }, materialsData);
-            toast.success("Encomenda atualizada com sucesso");
+            toast.success("Order updated successfully");
         } else {
             addOrderWithMaterials(orderData, materialsData);
-            toast.success("Encomenda adicionada com sucesso");
+            toast.success("Order added successfully");
         }
 
         setOpen(false);
@@ -176,13 +176,13 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="sm:max-w-[550px]">
                 <DialogHeader>
-                    <DialogTitle>{order ? "Editar Encomenda" : "Nova Encomenda"}</DialogTitle>
+                    <DialogTitle>{order ? "Edit Order" : "New Order"}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="grid gap-4 py-4">
                     <div className="grid grid-cols-2 gap-3">
                         <div className="grid gap-2">
                             <label htmlFor="orderCode" className="text-sm font-medium">
-                                Código do Pedido*
+                                Order Code*
                             </label>
                             <Input
                                 id="orderCode"
@@ -194,7 +194,7 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="store" className="text-sm font-medium">
-                                Loja*
+                                Store*
                             </label>
                             <Input
                                 id="store"
@@ -209,35 +209,35 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
                     <div className="grid grid-cols-2 gap-3">
                         <div className="grid gap-2">
                             <label htmlFor="estimatedDeliveryTime" className="text-sm font-medium">
-                                Tempo Estimado de Entrega
+                                Estimated Delivery Time
                             </label>
                             <Input
                                 id="estimatedDeliveryTime"
                                 name="estimatedDeliveryTime"
                                 value={formData.estimatedDeliveryTime}
                                 onChange={handleChange}
-                                placeholder="Ex: 5-7 dias úteis"
+                                placeholder="Ex: 5-7 business days"
                             />
                         </div>
                         <div className="grid gap-2">
                             <label htmlFor="status" className="text-sm font-medium">
-                                Status da Encomenda
+                                Order Status
                             </label>
                             <select
                                 value={formData.status}
                                 onChange={(e) => handleStatusChange(e.target.value)}
                                 className="p-2 border rounded"
                             >
-                                <option value="paid">Pago</option>
-                                <option value="inRoute">Em Rota</option>
-                                <option value="delivered">Entregue</option>
+                                <option value="paid">Paid</option>
+                                <option value="inRoute">In Route</option>
+                                <option value="delivered">Delivered</option>
                             </select>
                         </div>
                     </div>
 
                     {/* Serviço Relacionado com busca */}
                     <div className="grid gap-2">
-                        <label className="text-sm font-medium">Serviço Relacionado</label>
+                        <label className="text-sm font-medium">Related Service</label>
                         <button
                             type="button"
                             className="w-full p-2 border rounded text-left"
@@ -245,19 +245,19 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
                         >
                             {formData.relatedServiceId
                                 ? services.find(s => s.id === formData.relatedServiceId)?.name
-                                : "Selecione um serviço (opcional)"}
+                                : "Select a service (optional)"}
                         </button>
 
                         <CommandDialog open={serviceSearchOpen} onOpenChange={setServiceSearchOpen}>
                             <CommandInput
-                                placeholder="Buscar serviço..."
+                                placeholder="Search service..."
                                 value={serviceQuery}
                                 onValueChange={setServiceQuery}
                                 autoFocus
                             />
                             <CommandList>
                                 {filteredServices.length === 0 && (
-                                    <CommandEmpty>Nenhum serviço encontrado.</CommandEmpty>
+                                    <CommandEmpty>No service found.</CommandEmpty>
                                 )}
                                 {filteredServices.map(service => (
                                     <CommandItem
@@ -277,7 +277,7 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
 
                     {/* Materiais Encomendados com busca */}
                     <div className="grid gap-2">
-                        <label className="text-sm font-medium">Materiais Encomendados*</label>
+                        <label className="text-sm font-medium">Ordered Materials*</label>
                         <button
                             type="button"
                             className="w-full p-2 border rounded text-left"
@@ -286,21 +286,21 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
                             {selectedMaterialId
                                 ? (() => {
                                     const mat = materials.find(m => m.id === selectedMaterialId);
-                                    return mat ? `${mat.type} - ${mat.model}` : "Selecione um material";
+                                    return mat ? `${mat.type} - ${mat.model}` : "Select a material";
                                 })()
-                                : "Selecione um material"}
+                                : "Select a material"}
                         </button>
 
                         <CommandDialog open={materialSearchOpen} onOpenChange={setMaterialSearchOpen}>
                             <CommandInput
-                                placeholder="Buscar material..."
+                                placeholder="Search material..."
                                 value={materialQuery}
                                 onValueChange={setMaterialQuery}
                                 autoFocus
                             />
                             <CommandList>
                                 {filteredMaterials.length === 0 && (
-                                    <CommandEmpty>Nenhum material encontrado.</CommandEmpty>
+                                    <CommandEmpty>No material found.</CommandEmpty>
                                 )}
                                 {filteredMaterials.map(material => (
                                     <CommandItem
@@ -327,7 +327,7 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
                                             materialQuantity
                                         )}
                                     >
-                                        Adicionar
+                                        Add
                                     </Button>
                                 </div>
                             )}
@@ -335,11 +335,11 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
 
                         {/* Lista de materiais adicionados */}
                         <div className="border rounded-md p-2 max-h-48 overflow-auto">
-                            {selectedMaterials.length === 0 && <p className="text-sm text-gray-500">Nenhum material adicionado.</p>}
+                            {selectedMaterials.length === 0 && <p className="text-sm text-gray-500">No material added.</p>}
                             {selectedMaterials.map(item => (
                                 <div key={item.material.id} className="flex justify-between items-center py-1 border-b last:border-b-0">
                                     <div>
-                                        {item.material.type} - {item.material.model} (Qtd: {item.quantity})
+                                        {item.material.type} - {item.material.model} (Qty: {item.quantity})
                                     </div>
                                     <Button size="icon" variant="destructive" onClick={() => removeMaterialFromOrder(item.material.id)}>
                                         &times;
@@ -350,8 +350,8 @@ export default function OrderDialog({ open, setOpen, order }: OrderDialogProps) 
                     </div>
 
                     <DialogFooter>
-                        <Button type="submit">Salvar</Button>
-                        <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+                        <Button type="submit">Save</Button>
+                        <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

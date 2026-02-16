@@ -28,7 +28,7 @@ type SortField = "name" | "paymentStatus" | null;
 
 export default function ServicesPage() {
   const { services, clients, equipments, serviceTechnicians, technicians, deleteService, updateFinancialSummary, getServiceHistory, getTypeOptions } = useAppContext();
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingService, setEditingService] = useState<typeof services[0] | undefined>(undefined);
@@ -76,7 +76,7 @@ export default function ServicesPage() {
       return acc + (typeOption?.price || 0);
     }, 0);
 
-     //console.log("Service Types Price:", serviceTypesPrice);
+    //console.log("Service Types Price:", serviceTypesPrice);
     // Calculate materials selling price
     const serviceMaterials = getServiceMaterialsByServiceId(service.id);
     const materialsSellPrice = serviceMaterials.reduce((acc, sm) => {
@@ -89,7 +89,7 @@ export default function ServicesPage() {
 
   const calculateROIForService = (service: Service) => {
     const totalValue = calculateTotalValueForService(service);
-    
+
     // Calculate materials cost (purchase price)
     const serviceMaterials = getServiceMaterialsByServiceId(service.id);
     const materialsCost = serviceMaterials.reduce((acc, sm) => {
@@ -124,7 +124,7 @@ export default function ServicesPage() {
       deleteService(serviceToDelete);
       // Force update financial summary after deletion
       updateFinancialSummary();
-      toast.success("Serviço excluído com sucesso");
+      toast.success("Service deleted successfully");
       setDeleteDialogOpen(false);
     }
   };
@@ -154,7 +154,7 @@ export default function ServicesPage() {
   const filteredServices = services
     .filter(service => {
       const searchTermLower = searchQuery.toLowerCase();
-      const dateString = new Date(service.date).toLocaleDateString('pt-BR');
+      const dateString = new Date(service.date).toLocaleDateString();
 
       return (
         service.name.toLowerCase().includes(searchTermLower) ||
@@ -209,14 +209,14 @@ export default function ServicesPage() {
     .filter(s => s.paymentStatus === 'pending')
     .reduce((sum, s) => sum + s.totalValue, 0);
   const partialValue = services
-  .filter(s => s.paymentStatus === 'partial')
-  .reduce((sum, s) => {
-    const remainingAmount = (getInstallmentsByServiceId(s.id) || [])
-      .filter(inst => inst.status !== "paid")  // only unpaid installments
-      .reduce((instSum, inst) => instSum + inst.amount, 0);
+    .filter(s => s.paymentStatus === 'partial')
+    .reduce((sum, s) => {
+      const remainingAmount = (getInstallmentsByServiceId(s.id) || [])
+        .filter(inst => inst.status !== "paid")  // only unpaid installments
+        .reduce((instSum, inst) => instSum + inst.amount, 0);
 
-    return sum + remainingAmount;
-  }, 0);
+      return sum + remainingAmount;
+    }, 0);
   // Calculate unpaid value
   const unpaidValue = services
     .filter(s => s.paymentStatus === 'unpaid')
@@ -225,17 +225,17 @@ export default function ServicesPage() {
   return (
     <div className="w-full max-w-[100vw] overflow-hidden px-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Serviços</h1>
-        <Button className="anibtn-drawstroke" onClick={handleAddService}>+ Novo Serviço</Button>
+        <h1 className="text-2xl font-bold">Services</h1>
+        <Button className="anibtn-drawstroke" onClick={handleAddService}>+ New Service</Button>
       </div>
 
       <div className="bg-white rounded-lg shadow p-4 md:p-6 max-w-full overflow-hidden">
-        <h2 className="text-xl font-semibold mb-4">Gerenciamento de Serviços</h2>
+        <h2 className="text-xl font-semibold mb-4">Service Management</h2>
 
         <div className="mb-6 flex flex-col md:flex-row gap-4 flex-wrap">
           <div className="relative flex-grow">
             <Input
-              placeholder="Buscar por nome, cliente, data (DD/MM/AAAA)..."
+              placeholder="Search by name, client, date (DD/MM/YYYY)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -258,7 +258,7 @@ export default function ServicesPage() {
             ) : (
               <ArrowUpAZ className="h-4 w-4 text-gray-400" />
             )}
-            <span>{isMobile ? "" : "Por Status Pag."}</span>
+            <span>{isMobile ? "" : "By Pay Status"}</span>
           </Button>
           <Button
             variant="outline"
@@ -272,7 +272,7 @@ export default function ServicesPage() {
             ) : (
               <ArrowUpAZ className="h-4 w-4 text-gray-400" />
             )}
-            <span>{isMobile ? "" : "Por Nome"}</span>
+            <span>{isMobile ? "" : "By Name"}</span>
           </Button>
           <Button
             variant="outline"
@@ -280,7 +280,7 @@ export default function ServicesPage() {
             className="flex items-center w-auto"
           >
             <Filter className="h-4 w-4 mr-2" />
-            {isMobile ? "" : "Filtros"} {showFilters ? '▲' : '▼'}
+            {isMobile ? "" : "Filters"} {showFilters ? '▲' : '▼'}
           </Button>
         </div>
 
@@ -288,7 +288,7 @@ export default function ServicesPage() {
           <div className="mb-6 p-4 border rounded-md bg-gray-50 overflow-x-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="font-medium mb-2">Status de Pagamento</h3>
+                <h3 className="font-medium mb-2">Payment Status</h3>
                 <div className="space-y-2">
                   <div className="flex items-center">
                     <Checkbox
@@ -341,7 +341,7 @@ export default function ServicesPage() {
               </div>
 
               <div>
-                <h3 className="font-medium mb-2">Status do Serviço</h3>
+                <h3 className="font-medium mb-2">Service Status</h3>
                 <div className="space-y-2">
                   <div className="flex items-center">
                     <Checkbox
@@ -401,18 +401,18 @@ export default function ServicesPage() {
             <thead className="bg-gray-50 text-left">
               <tr>
                 {/* Optimized column headers */}
-                <th className="w-[8%] min-w-[80px] p-2 text-xs sm:text-sm">Data</th>
-                <th className="w-[12%] min-w-[100px] p-2 text-xs sm:text-sm">Nome</th>
-                <th className="w-[12%] min-w-[100px] p-2 text-xs sm:text-sm">Cliente</th>
-                <th className="w-[10%] min-w-[90px] p-2 text-xs sm:text-sm">Equipamento</th>
-                <th className="w-[12%] min-w-[100px] p-2 text-xs sm:text-sm">Técnicos</th>
-                <th className="w-[8%] min-w-[70px] p-2 text-xs sm:text-sm">Valor</th>
+                <th className="w-[8%] min-w-[80px] p-2 text-xs sm:text-sm">Date</th>
+                <th className="w-[12%] min-w-[100px] p-2 text-xs sm:text-sm">Name</th>
+                <th className="w-[12%] min-w-[100px] p-2 text-xs sm:text-sm">Client</th>
+                <th className="w-[10%] min-w-[90px] p-2 text-xs sm:text-sm">Equipment</th>
+                <th className="w-[12%] min-w-[100px] p-2 text-xs sm:text-sm">Technicians</th>
+                <th className="w-[8%] min-w-[70px] p-2 text-xs sm:text-sm">Value</th>
                 <th className="w-[6%] min-w-[60px] p-2 text-xs sm:text-sm">ROI</th>
-                <th className="w-[10%] min-w-[90px] p-2 text-xs sm:text-sm">Pagamento</th>
-                <th className="w-[10%] min-w-[90px] p-2 text-xs sm:text-sm">Serviço</th>
-                <th className="w-[6%] min-w-[60px] p-2 text-xs sm:text-sm">Tipo</th>
-                <th className="w-[10%] min-w-[90px] p-2 text-xs sm:text-sm">Histórico</th>
-                <th className="w-[6%] min-w-[70px] p-2 text-xs sm:text-sm">Ações</th>
+                <th className="w-[10%] min-w-[90px] p-2 text-xs sm:text-sm">Payment</th>
+                <th className="w-[10%] min-w-[90px] p-2 text-xs sm:text-sm">Service</th>
+                <th className="w-[6%] min-w-[60px] p-2 text-xs sm:text-sm">Type</th>
+                <th className="w-[10%] min-w-[90px] p-2 text-xs sm:text-sm">History</th>
+                <th className="w-[6%] min-w-[70px] p-2 text-xs sm:text-sm">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -427,13 +427,13 @@ export default function ServicesPage() {
                     <tr className="hover:bg-gray-50">
                       {/* Table cells with optimized styling */}
                       <td className="w-[8%] min-w-[80px] truncate p-2 text-xs sm:text-sm">
-                        {new Date(service.date).toLocaleDateString('pt-BR')}
+                        {new Date(service.date).toLocaleDateString()}
                       </td>
                       <td className="w-[8%] min-w-[80px] truncate p-2 text-xs sm:text-sm">
                         {service.name}
                       </td>
                       <td className="w-[8%] min-w-[80px] truncate p-2 text-xs sm:text-sm">
-                        {getClientForService(service, clients)?.name || "Cliente não definido"}
+                        {getClientForService(service, clients)?.name || "Client undefined"}
                       </td>
                       <td className="w-[8%] min-w-[80px] truncate p-2 text-xs sm:text-sm">
                         {getEquipmentForService(service, equipments)?.name || "-"}
@@ -458,7 +458,7 @@ export default function ServicesPage() {
                   ${service.visitType === 'novo' ?
                             'bg-blue-100 text-blue-800' :
                             'bg-amber-100 text-amber-800'}`}>
-                          {service.visitType === 'novo' ? 'Novo' : 'Revisita'}
+                          {service.visitType === 'novo' ? 'New' : 'Revisit'}
                         </span>
                       </td>
                       <td className="w-[8%] min-w-[80px] truncate p-2 text-xs sm:text-sm">
@@ -477,7 +477,7 @@ export default function ServicesPage() {
                             )}
                           </Button>
                         ) : (
-                          <span className="text-sm text-gray-400">Sem histórico</span>
+                          <span className="text-sm text-gray-400">No History</span>
                         )}
                       </td>
                       <td className="w-[8%] min-w-[80px] truncate p-2 text-xs sm:text-sm">
@@ -507,19 +507,19 @@ export default function ServicesPage() {
                         <td colSpan={12} className="p-0">
                           <div className="p-4">
                             <h4 className="mb-2 font-medium text-blue-600">
-                              Histórico de Serviços - {getClientForService(service, clients)?.name || "Cliente não definido"} -
-                              {getEquipmentForService(service, equipments)?.name || "Sem equipamento definido"}
+                              Service History - {getClientForService(service, clients)?.name || "Client undefined"} -
+                              {getEquipmentForService(service, equipments)?.name || "No equipment defined"}
                             </h4>
                             <div className="overflow-x-auto">
                               <table className="min-w-full divide-y divide-gray-300">
                                 <thead className="bg-gray-100">
                                   <tr>
-                                    <th className="py-2 pl-4 pr-3 text-left text-xs font-medium text-gray-500">Data</th>
-                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Serviço</th>
-                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Descrição</th>
-                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Valor</th>
+                                    <th className="py-2 pl-4 pr-3 text-left text-xs font-medium text-gray-500">Date</th>
+                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Service</th>
+                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Description</th>
+                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Value</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Status</th>
-                                    <th className="py-2 pl-3 pr-4 text-left text-xs font-medium text-gray-500">Tipo</th>
+                                    <th className="py-2 pl-3 pr-4 text-left text-xs font-medium text-gray-500">Type</th>
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200 bg-white">
@@ -545,7 +545,7 @@ export default function ServicesPage() {
                                   ${relatedService.visitType === 'novo' ?
                                             'bg-blue-100 text-blue-800' :
                                             'bg-amber-100 text-amber-800'}`}>
-                                          {relatedService.visitType === 'novo' ? 'Novo' : 'Revisita'}
+                                          {relatedService.visitType === 'novo' ? 'New' : 'Revisit'}
                                         </span>
                                       </td>
                                     </tr>
@@ -564,7 +564,7 @@ export default function ServicesPage() {
               {filteredServices.length === 0 && (
                 <tr>
                   <td colSpan={12} className="p-8 text-center text-sm text-gray-500">
-                    Nenhum serviço encontrado
+                    No services found
                   </td>
                 </tr>
               )}
@@ -579,22 +579,22 @@ export default function ServicesPage() {
             <div className="text-sm text-gray-500 mt-1">R$ {totalValue.toFixed(2)}</div>
           </div>
           <div className="bg-green-50 p-4 rounded-lg text-center">
-            <div className="text-green-600 text-sm">Pagos</div>
+            <div className="text-green-600 text-sm">Paid</div>
             <div className="text-xl md:text-2xl font-semibold mt-1 text-green-600">{paidCount}</div>
             <div className="text-sm text-green-500 mt-1">R$ {paidValue.toFixed(2)}</div>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg text-center">
-            <div className="text-yellow-600 text-sm">Pendentes</div>
+            <div className="text-yellow-600 text-sm">Pending</div>
             <div className="text-xl md:text-2xl font-semibold mt-1 text-yellow-600">{pendingCount}</div>
             <div className="text-sm text-yellow-500 mt-1">R$ {pendingValue.toFixed(2)}</div>
           </div>
           <div className="bg-blue-50 p-4 rounded-lg text-center">
-            <div className="text-blue-600 text-sm">Parciais</div>
+            <div className="text-blue-600 text-sm">Partial</div>
             <div className="text-xl md:text-2xl font-semibold mt-1 text-blue-600">{partialCount}</div>
             <div className="text-sm text-blue-500 mt-1">R$ {partialValue.toFixed(2)}</div>
           </div>
           <div className="bg-red-50 p-4 rounded-lg text-center">
-            <div className="text-red-600 text-sm">Não Pagos</div>
+            <div className="text-red-600 text-sm">Unpaid</div>
             <div className="text-xl md:text-2xl font-semibold mt-1 text-red-600">{unpaidCount}</div>
             <div className="text-sm text-red-500 mt-1">R$ {unpaidValue.toFixed(2)}</div>
           </div>
@@ -610,15 +610,15 @@ export default function ServicesPage() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogTitle>Confirm deletion</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir este serviço? Esta ação não pode ser desfeita.
+              Are you sure you want to delete this service? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Excluir
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

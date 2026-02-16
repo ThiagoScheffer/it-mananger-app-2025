@@ -47,7 +47,7 @@ export default function TechniciansPage() {
   const confirmDelete = () => {
     if (technicianToDelete) {
       deleteTechnician(technicianToDelete);
-      toast.success("Técnico excluído com sucesso");
+      toast.success("Technician deleted successfully");
       setDeleteDialogOpen(false);
     }
   };
@@ -61,16 +61,16 @@ export default function TechniciansPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Técnicos</h1>
-        <Button className="anibtn-drawstroke" onClick={handleAddTechnician}>+ Novo Técnico</Button>
+        <h1 className="text-2xl font-bold">Technicians</h1>
+        <Button className="anibtn-drawstroke" onClick={handleAddTechnician}>+ New Technician</Button>
       </div>
 
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold mb-4">Gerenciamento de Técnicos</h2>
-        
+        <h2 className="text-xl font-semibold mb-4">Technician Management</h2>
+
         <div className="mb-6 relative">
           <Input
-            placeholder="Buscar por nome, especialidade..."
+            placeholder="Search by name, specialty..."
             value={searchQuery}
             onChange={handleSearchChange}
             className="pl-10"
@@ -86,11 +86,11 @@ export default function TechniciansPage() {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-50 text-left">
-                <th className="p-3 border-b">Nome</th>
-                <th className="p-3 border-b">Especialidade</th>
+                <th className="p-3 border-b">Name</th>
+                <th className="p-3 border-b">Specialty</th>
                 <th className="p-3 border-b">Status</th>
-                <th className="p-3 border-b">Data Cadastro</th>
-                <th className="p-3 border-b">Ações</th>
+                <th className="p-3 border-b">Registration Date</th>
+                <th className="p-3 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -100,14 +100,14 @@ export default function TechniciansPage() {
                   <td className="p-3">{technician.specialty || "-"}</td>
                   <td className="p-3">
                     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
-                      ${technician.status === 'active' ? 
-                        'bg-green-100 text-green-800' : 
+                      ${technician.status === 'active' ?
+                        'bg-green-100 text-green-800' :
                         'bg-gray-100 text-gray-800'}`
                     }>
-                      {technician.status === 'active' ? 'Ativo' : 'Inativo'}
+                      {technician.status === 'active' ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="p-3">{new Date(technician.createdAt).toLocaleDateString('pt-BR')}</td>
+                  <td className="p-3">{new Date(technician.createdAt).toLocaleDateString()}</td>
                   <td className="p-3">
                     <div className="flex space-x-2">
                       <Button
@@ -129,11 +129,11 @@ export default function TechniciansPage() {
                   </td>
                 </tr>
               ))}
-              
+
               {filteredTechnicians.length === 0 && (
                 <tr>
                   <td colSpan={5} className="p-8 text-center text-gray-500">
-                    Nenhum técnico encontrado
+                    No technicians found
                   </td>
                 </tr>
               )}
@@ -151,15 +151,15 @@ export default function TechniciansPage() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogTitle>Confirm deletion</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir este técnico? Esta ação não pode ser desfeita.
+              Are you sure you want to delete this technician? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Excluir
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -16,7 +16,7 @@ interface ClientDialogProps {
 
 export default function ClientDialog({ open, setOpen, client }: ClientDialogProps) {
   const { addClient, updateClient } = useAppContext();
-  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -56,12 +56,12 @@ export default function ClientDialog({ open, setOpen, client }: ClientDialogProp
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim()) {
-      toast.error("O nome do cliente é obrigatório");
+      toast.error("Client name is required");
       return;
     }
-    
+
     if (client) {
       updateClient({
         ...client,
@@ -71,7 +71,7 @@ export default function ClientDialog({ open, setOpen, client }: ClientDialogProp
         workType: formData.workType,
         status: formData.status,
       });
-      toast.success("Cliente atualizado com sucesso");
+      toast.success("Client updated successfully");
     } else {
       addClient({
         name: formData.name,
@@ -80,9 +80,9 @@ export default function ClientDialog({ open, setOpen, client }: ClientDialogProp
         workType: formData.workType,
         status: formData.status,
       });
-      toast.success("Cliente adicionado com sucesso");
+      toast.success("Client added successfully");
     }
-    
+
     setOpen(false);
   };
 
@@ -90,13 +90,13 @@ export default function ClientDialog({ open, setOpen, client }: ClientDialogProp
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{client ? "Editar Cliente" : "Novo Cliente"}</DialogTitle>
+          <DialogTitle>{client ? "Edit Client" : "New Client"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <label htmlFor="name" className="text-sm font-medium">
-                Nome*
+                Name*
               </label>
               <Input
                 id="name"
@@ -120,7 +120,7 @@ export default function ClientDialog({ open, setOpen, client }: ClientDialogProp
             </div>
             <div className="grid gap-2">
               <label htmlFor="address" className="text-sm font-medium">
-                Endereço
+                Address
               </label>
               <Input
                 id="address"
@@ -131,7 +131,7 @@ export default function ClientDialog({ open, setOpen, client }: ClientDialogProp
             </div>
             <div className="grid gap-2">
               <label htmlFor="workType" className="text-sm font-medium">
-                Tipo de Trabalho
+                Work Type
               </label>
               <Input
                 id="workType"
@@ -146,20 +146,20 @@ export default function ClientDialog({ open, setOpen, client }: ClientDialogProp
               </label>
               <Select value={formData.status} onValueChange={handleStatusChange}>
                 <SelectTrigger id="status">
-                  <SelectValue placeholder="Selecione o status" />
+                  <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="active">Ativo</SelectItem>
-                  <SelectItem value="inactive">Inativo</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancelar
+              Cancel
             </Button>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit">Save</Button>
           </DialogFooter>
         </form>
       </DialogContent>

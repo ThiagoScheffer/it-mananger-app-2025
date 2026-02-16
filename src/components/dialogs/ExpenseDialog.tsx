@@ -18,7 +18,7 @@ interface ExpenseDialogProps {
 
 export default function ExpenseDialog({ open, setOpen, expense }: ExpenseDialogProps) {
   const { addExpense, updateExpense, updateFinancialSummary } = useAppContext();
-  
+
   const [formData, setFormData] = useState({
     description: "",
     value: 0,
@@ -27,7 +27,7 @@ export default function ExpenseDialog({ open, setOpen, expense }: ExpenseDialogP
     isPaid: false,
     notes: ""
   });
-  
+
   useEffect(() => {
     if (expense) {
       setFormData({
@@ -49,39 +49,39 @@ export default function ExpenseDialog({ open, setOpen, expense }: ExpenseDialogP
       });
     }
   }, [expense, open]);
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
+
     if (name === "value") {
       setFormData((prev) => ({ ...prev, [name]: parseFloat(value) || 0 }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
-  
+
   const handlePaidChange = (checked: boolean) => {
     setFormData(prev => ({ ...prev, isPaid: checked }));
   };
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.description.trim()) {
-      toast.error("A descrição da despesa é obrigatória");
+      toast.error("Expense description is required");
       return;
     }
-    
+
     if (!formData.category.trim()) {
-      toast.error("A categoria da despesa é obrigatória");
+      toast.error("Expense category is required");
       return;
     }
-    
+
     if (formData.value <= 0) {
-      toast.error("O valor da despesa deve ser maior que zero");
+      toast.error("Expense value must be greater than zero");
       return;
     }
-    
+
     if (expense) {
       updateExpense({
         ...expense,
@@ -92,10 +92,10 @@ export default function ExpenseDialog({ open, setOpen, expense }: ExpenseDialogP
         isPaid: formData.isPaid,
         notes: formData.notes
       });
-      
+
       // Force financial data update and ensure it's recalculated
       updateFinancialSummary();
-      toast.success("Despesa atualizada com sucesso");
+      toast.success("Expense updated successfully");
     } else {
       addExpense({
         description: formData.description,
@@ -105,26 +105,26 @@ export default function ExpenseDialog({ open, setOpen, expense }: ExpenseDialogP
         isPaid: formData.isPaid,
         notes: formData.notes
       });
-      
+
       // Force financial data update and ensure it's recalculated
       updateFinancialSummary();
-      toast.success("Despesa adicionada com sucesso");
+      toast.success("Expense added successfully");
     }
-    
+
     setOpen(false);
   };
-  
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{expense ? "Editar Despesa" : "Nova Despesa"}</DialogTitle>
+          <DialogTitle>{expense ? "Edit Expense" : "New Expense"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <label htmlFor="description" className="text-sm font-medium">
-                Descrição*
+                Description*
               </label>
               <Input
                 id="description"
@@ -137,7 +137,7 @@ export default function ExpenseDialog({ open, setOpen, expense }: ExpenseDialogP
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-2">
                 <label htmlFor="value" className="text-sm font-medium">
-                  Valor (R$)*
+                  Value ($)*
                 </label>
                 <Input
                   id="value"
@@ -151,7 +151,7 @@ export default function ExpenseDialog({ open, setOpen, expense }: ExpenseDialogP
               </div>
               <div className="grid gap-2">
                 <label htmlFor="category" className="text-sm font-medium">
-                  Categoria*
+                  Category*
                 </label>
                 <Input
                   id="category"
@@ -165,7 +165,7 @@ export default function ExpenseDialog({ open, setOpen, expense }: ExpenseDialogP
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-2">
                 <label htmlFor="dueDate" className="text-sm font-medium">
-                  Data de Vencimento*
+                  Due Date*
                 </label>
                 <Input
                   id="dueDate"
@@ -178,26 +178,26 @@ export default function ExpenseDialog({ open, setOpen, expense }: ExpenseDialogP
               </div>
               <div className="grid gap-2">
                 <label className="text-sm font-medium">
-                  Status do Pagamento
+                  Payment Status
                 </label>
                 <div className="flex items-center space-x-2 h-10 pt-2">
-                  <Checkbox 
-                    id="isPaid" 
-                    checked={formData.isPaid} 
+                  <Checkbox
+                    id="isPaid"
+                    checked={formData.isPaid}
                     onCheckedChange={handlePaidChange}
                   />
                   <label
                     htmlFor="isPaid"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    Pago
+                    Paid
                   </label>
                 </div>
               </div>
             </div>
             <div className="grid gap-2">
               <label htmlFor="notes" className="text-sm font-medium">
-                Observações
+                Notes
               </label>
               <Textarea
                 id="notes"
@@ -210,9 +210,9 @@ export default function ExpenseDialog({ open, setOpen, expense }: ExpenseDialogP
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancelar
+              Cancel
             </Button>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit">Save</Button>
           </DialogFooter>
         </form>
       </DialogContent>

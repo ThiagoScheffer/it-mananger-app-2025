@@ -9,29 +9,29 @@ interface DashboardCardProps {
   icon?: ReactNode;
   trend?: "up" | "down";
   valueColor?: string;
-    isMonetary?: boolean;
-    className?: string; // Add this line
+  isMonetary?: boolean;
+  className?: string; // Add this line
 }
 
-export function DashboardCard({ 
-  title, 
-  value, 
-  footer, 
-  icon, 
-  trend, 
-  valueColor = "text-foreground", 
-  isMonetary = false 
+export function DashboardCard({
+  title,
+  value,
+  footer,
+  icon,
+  trend,
+  valueColor = "text-foreground",
+  isMonetary = false
 }: DashboardCardProps) {
-  
+
   // For monetary values, ensure we don't display negative values with a dash
-  const displayValue = isMonetary 
-    ? (typeof value === 'number' && value < 0 
-      ? "R$ 0,00" 
-      : typeof value === 'number' 
-        ? `R$ ${value.toFixed(2)}` 
+  const displayValue = isMonetary
+    ? (typeof value === 'number' && value < 0
+      ? "$ 0.00"
+      : typeof value === 'number'
+        ? `$ ${value.toFixed(2)}`
         : value)
     : value;
-  
+
   return (
     <Card className="shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

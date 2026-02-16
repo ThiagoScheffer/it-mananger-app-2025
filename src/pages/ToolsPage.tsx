@@ -6,7 +6,7 @@ import { ClientReportCard } from "@/components/reports/ClientReportCard";
 import { ClientReportDialog } from "@/components/dialogs/ClientReportDialog";
 
 import { BudgetReportCard } from "@/components/reports/BudgetReportCard";
-import  BudgetDialog  from "@/components/dialogs/BudgetDialog";
+import BudgetDialog from "@/components/dialogs/BudgetDialog";
 import { MonthlyReportCard } from "@/components/reports/MonthlyReportCard";
 import { MonthlyReportDialog } from "@/components/dialogs/MonthlyReportDialog";
 
@@ -18,20 +18,20 @@ export default function ToolsPage() {
 
   const openClientReport = () => {
     setClientReportOpen(true);
-    };
+  };
 
-    const openBudgetReport = () => {
-        setBudgetDialogOpen(true);
-    };
+  const openBudgetReport = () => {
+    setBudgetDialogOpen(true);
+  };
 
-    const openMonthlyReport = () => {
-        setMonthlyReportOpen(true);
-    };
+  const openMonthlyReport = () => {
+    setMonthlyReportOpen(true);
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Ferramentas</h1>
+        <h1 className="text-2xl font-bold">Tools</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -42,8 +42,8 @@ export default function ToolsPage() {
       </div>
 
       <BudgetDialog open={clientBudgetReport} setOpen={setBudgetDialogOpen} />
-          <ClientReportDialog open={clientReportOpen} setOpen={setClientReportOpen} />
-          <MonthlyReportDialog open={monthlyReportOpen} setOpen={setMonthlyReportOpen} />
+      <ClientReportDialog open={clientReportOpen} setOpen={setClientReportOpen} />
+      <MonthlyReportDialog open={monthlyReportOpen} setOpen={setMonthlyReportOpen} />
     </div>
   );
 }

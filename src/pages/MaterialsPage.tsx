@@ -44,7 +44,7 @@ export default function MaterialsPage() {
 
   const handleAddMaterial = () => {
     setEditingMaterial(undefined);
-      setDialogOpen(true);
+    setDialogOpen(true);
   };
 
   const handleEditMaterial = (material: typeof materials[0]) => {
@@ -60,7 +60,7 @@ export default function MaterialsPage() {
   const confirmDelete = () => {
     if (materialToDelete) {
       deleteMaterial(materialToDelete);
-      toast.success("Material excluído com sucesso");
+      toast.success("Material deleted successfully");
       setDeleteDialogOpen(false);
     }
   };
@@ -84,10 +84,10 @@ export default function MaterialsPage() {
   // Extract unique material types for filtering
   const uniqueTypes = Array.from(new Set(materials.map(material => material.type)));
 
-    const calculateReturnValue = (material: typeof materials[0]) => {
-        if (!material.purchasePrice || !material.sellingPrice) return 0;
-        return material.sellingPrice - material.purchasePrice;
-    }
+  const calculateReturnValue = (material: typeof materials[0]) => {
+    if (!material.purchasePrice || !material.sellingPrice) return 0;
+    return material.sellingPrice - material.purchasePrice;
+  }
 
   // Apply filters and sorting
   let filteredMaterials = materials.filter(
@@ -107,7 +107,7 @@ export default function MaterialsPage() {
     filteredMaterials = [...filteredMaterials].sort((a, b) => {
       const valA = a[sortField].toLowerCase();
       const valB = b[sortField].toLowerCase();
-      
+
       if (sortDirection === 'asc') {
         return valA.localeCompare(valB);
       } else {
@@ -127,18 +127,18 @@ export default function MaterialsPage() {
         return "bg-gray-100 text-gray-800 border-gray-300";
     }
   };
-    //check if the profit margin is greater than 20% and return the color accordingly
-    const getReturnValueStyle = (material: typeof materials[0]) => {
-        const { returnValue, sellingPrice } = material;
-        if (!sellingPrice || sellingPrice === 0) return "text-gray-700";
+  //check if the profit margin is greater than 20% and return the color accordingly
+  const getReturnValueStyle = (material: typeof materials[0]) => {
+    const { returnValue, sellingPrice } = material;
+    if (!sellingPrice || sellingPrice === 0) return "text-gray-700";
 
-        const marginPercent = (calculateReturnValue(material) / sellingPrice) * 100;
+    const marginPercent = (calculateReturnValue(material) / sellingPrice) * 100;
 
-        if (marginPercent >= 40) return "text-green-600";
-        if (marginPercent >= 20) return "text-blue-600";
-        if (marginPercent >= 15) return "bg-orange-50 text-orange-600";
-        return "bg-red-50 text-red-600";
-    };
+    if (marginPercent >= 40) return "text-green-600";
+    if (marginPercent >= 20) return "text-blue-600";
+    if (marginPercent >= 15) return "bg-orange-50 text-orange-600";
+    return "bg-red-50 text-red-600";
+  };
 
   // Function to generate color for material type
   const getMaterialTypeColor = (type: string): string => {
@@ -152,13 +152,13 @@ export default function MaterialsPage() {
       "bg-red-100 text-red-800",
       "bg-gray-100 text-gray-800",
     ];
-    
+
     // Use a hash function to consistently assign colors to types
     let hash = 0;
     for (let i = 0; i < type.length; i++) {
       hash = type.charCodeAt(i) + ((hash << 5) - hash);
     }
-    
+
     const colorIndex = Math.abs(hash) % colors.length;
     return colors[colorIndex];
   };
@@ -166,17 +166,17 @@ export default function MaterialsPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Materiais</h1>
-        <Button className="anibtn-drawstroke" onClick={handleAddMaterial}>+ Novo Material</Button>
+        <h1 className="text-2xl font-bold">Materials</h1>
+        <Button className="anibtn-drawstroke" onClick={handleAddMaterial}>+ New Material</Button>
       </div>
 
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold mb-4">Gerenciamento de Materiais</h2>
-        
+        <h2 className="text-xl font-semibold mb-4">Material Management</h2>
+
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-grow">
             <Input
-              placeholder="Buscar por tipo, modelo..."
+              placeholder="Search by type, model..."
               value={searchQuery}
               onChange={handleSearchChange}
               className="pl-10"
@@ -187,18 +187,18 @@ export default function MaterialsPage() {
               </svg>
             </div>
           </div>
-          
+
           <div className="flex gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="flex gap-2 items-center">
                   <Filter className="h-4 w-4" />
-                  <span>Filtrar Tipo</span>
+                  <span>Filter Type</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="min-w-[200px]">
                 <DropdownMenuItem onClick={() => handleFilterType(null)}>
-                  Todos os Tipos
+                  All Types
                 </DropdownMenuItem>
                 {uniqueTypes.map((type) => (
                   <DropdownMenuItem key={type} onClick={() => handleFilterType(type)}>
@@ -208,8 +208,8 @@ export default function MaterialsPage() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="flex gap-2 items-center"
               onClick={() => toggleSort('type')}
             >
@@ -220,11 +220,11 @@ export default function MaterialsPage() {
               ) : (
                 <ArrowUpAZ className="h-4 w-4 text-gray-400" />
               )}
-              <span>Por Tipo</span>
+              <span>By Type</span>
             </Button>
-            
-            <Button 
-              variant="outline" 
+
+            <Button
+              variant="outline"
               className="flex gap-2 items-center"
               onClick={() => toggleSort('model')}
             >
@@ -235,7 +235,7 @@ export default function MaterialsPage() {
               ) : (
                 <ArrowUpAZ className="h-4 w-4 text-gray-400" />
               )}
-              <span>Por Modelo</span>
+              <span>By Model</span>
             </Button>
           </div>
         </div>
@@ -244,15 +244,15 @@ export default function MaterialsPage() {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-50 text-left">
-                <th className="p-1 border-b">Tipo</th>
-                <th className="p-1 border-b">Modelo</th>
-                <th className="p-1 border-b">Descrição</th>
-                <th className="p-1 border-b">Estoque</th>
+                <th className="p-1 border-b">Type</th>
+                <th className="p-1 border-b">Model</th>
+                <th className="p-1 border-b">Description</th>
+                <th className="p-1 border-b">Stock</th>
                 <th className="p-1 border-b">Status</th>
-                <th className="p-1 border-b">Valor de Compra</th>
-                <th className="p-1 border-b">Valor de Venda</th>
-                <th className="p-1 border-b">Retorno</th>
-                <th className="p-1 border-b">Ações</th>
+                <th className="p-1 border-b">Purchase Value</th>
+                <th className="p-1 border-b">Sale Value</th>
+                <th className="p-1 border-b">Return</th>
+                <th className="p-1 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -269,12 +269,12 @@ export default function MaterialsPage() {
                   <td className="p-1">{material.stock || 0}</td>
                   <td className="p-1">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(material.status)}`}>
-                      {material.status === "available" ? "Disponível" : "Indisponível"}
+                      {material.status === "available" ? "Available" : "Unavailable"}
                     </span>
                   </td>
                   <td className="p-1">R$ {material.purchasePrice.toFixed(2)}</td>
                   <td className="p-1">R$ {material.sellingPrice.toFixed(2)}</td>
-                      <td className={`p-1 ${getReturnValueStyle(material)}`}>R$ {(calculateReturnValue(material) ?? 0).toFixed(2)}</td>
+                  <td className={`p-1 ${getReturnValueStyle(material)}`}>R$ {(calculateReturnValue(material) ?? 0).toFixed(2)}</td>
                   <td className="p-1">
                     <div className="flex space-x-2">
                       <Button
@@ -296,11 +296,11 @@ export default function MaterialsPage() {
                   </td>
                 </tr>
               ))}
-              
+
               {filteredMaterials.length === 0 && (
                 <tr>
                   <td colSpan={9} className="p-8 text-center text-gray-500">
-                    Nenhum material encontrado
+                    No materials found
                   </td>
                 </tr>
               )}
@@ -318,15 +318,15 @@ export default function MaterialsPage() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogTitle>Confirm deletion</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir este material? Esta ação não pode ser desfeita.
+              Are you sure you want to delete this material? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Excluir
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

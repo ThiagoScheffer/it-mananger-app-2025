@@ -64,7 +64,7 @@ export default function InstallmentManager({
 
     if (createInstallments && !manualOverride && serviceTotal > 0) {
       // Only generate if we don't already have installments or if parameters changed significantly
-      const shouldGenerate = mode === 'create' || 
+      const shouldGenerate = mode === 'create' ||
         (mode === 'edit' && installmentPlan.length === 0) ||
         (mode === 'edit' && installmentPlan.length !== numberOfInstallments);
 
@@ -87,20 +87,20 @@ export default function InstallmentManager({
 
   const handleCreateInstallmentsChange = (checked: boolean) => {
     setCreateInstallments(checked);
-    
+
     if (!checked) {
       // User wants to remove installments
       setInstallmentPlan([]);
       onInstallmentsChange([]);
-      
+
       // In edit mode, show confirmation dialog for removing existing installments
       if (mode === 'edit' && initialInstallments.length > 0) {
         const hasPaidInstallments = initialInstallments.some(i => i.status === 'paid');
-        
+
         if (hasPaidInstallments) {
           const confirmed = window.confirm(
-            'Este serviço possui parcelas pagas. Tem certeza que deseja remover todas as parcelas? ' +
-            'Esta ação não pode ser desfeita.'
+            'This service has paid installments. Are you sure you want to remove all installments? ' +
+            'This action cannot be undone.'
           );
           if (!confirmed) {
             // User canceled, restore the checkbox
@@ -111,7 +111,7 @@ export default function InstallmentManager({
           }
         } else {
           const confirmed = window.confirm(
-            'Tem certeza que deseja remover todas as parcelas deste serviço?'
+            'Are you sure you want to remove all installments for this service?'
           );
           if (!confirmed) {
             // User canceled, restore the checkbox
@@ -121,8 +121,8 @@ export default function InstallmentManager({
             return;
           }
         }
-        
-        toast.success('Parcelas serão removidas quando você salvar o serviço.');
+
+        toast.success('Installments will be removed when you save the service.');
       }
     } else if (checked && serviceTotal > 0 && !manualOverride) {
       // Generate preview when checkbox is enabled
@@ -153,7 +153,7 @@ export default function InstallmentManager({
 
   const handleMarkAsPaid = async (installmentId: string, index: number) => {
     if (!installmentId) {
-      toast.error('ID da parcela não encontrado');
+      toast.error('Installment ID not found');
       return;
     }
 
@@ -171,19 +171,19 @@ export default function InstallmentManager({
       onInstallmentsChange(updatedPlan);
     } catch (error) {
       console.error('Error marking installment as paid:', error);
-      toast.error('Erro ao marcar parcela como paga');
+      toast.error('Error marking installment as paid');
     }
   };
 
   const handleRecalculate = async () => {
     if (!serviceId) {
-      toast.error('ID do serviço não encontrado');
+      toast.error('Service ID not found');
       return;
     }
 
     const confirmed = window.confirm(
-      'Deseja recalcular as parcelas com base no novo valor total? ' +
-      'Isso afetará apenas as parcelas pendentes.'
+      'Do you want to recalculate installments based on new total value? ' +
+      'This will only affect pending installments.'
     );
 
     if (confirmed) {
@@ -200,18 +200,18 @@ export default function InstallmentManager({
           const updatedInstallments = InstallmentService.getServiceInstallments(serviceId);
           setInstallmentPlan(updatedInstallments);
           onInstallmentsChange(updatedInstallments);
-          toast.success('Parcelas recalculadas com sucesso!');
+          toast.success('Installments recalculated successfully!');
         }
       } catch (error) {
         console.error('Error recalculating installments:', error);
-        toast.error('Erro ao recalcular parcelas');
+        toast.error('Error recalculating installments');
       }
     }
   };
 
   const validatePlan = () => {
     console.log('Validating installment plan:', {
-      installmentPlan, 
+      installmentPlan,
       serviceTotal
     });
     return InstallmentService.validateInstallmentPlan(installmentPlan, serviceTotal);
@@ -245,7 +245,7 @@ export default function InstallmentManager({
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm font-medium">Parcelamento</CardTitle>
+          <CardTitle className="text-sm font-medium">Installments</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-2">
@@ -254,12 +254,12 @@ export default function InstallmentManager({
               checked={createInstallments}
               onCheckedChange={handleCreateInstallmentsChange}
             />
-            <Label htmlFor="create-installments">Criar parcelamento</Label>
+            <Label htmlFor="create-installments">Create installment plan</Label>
           </div>
           {mode === 'edit' && initialInstallments.length > 0 && (
             <div className="mt-2 text-sm text-orange-600">
-              ⚠️ Este serviço possui {initialInstallments.length} parcela(s). 
-              Marque a opção acima para visualizar ou remover.
+              ⚠️ This service has {initialInstallments.length} installment(s).
+              Check the option above to view or remove.
             </div>
           )}
         </CardContent>
@@ -271,7 +271,7 @@ export default function InstallmentManager({
     <Card>
       <CardHeader>
         <CardTitle className="text-sm font-medium flex items-center justify-between">
-          Configuração de Parcelamento
+          Installment Configuration
           {mode === 'edit' && serviceId && (
             <Button
               type="button"
@@ -279,7 +279,7 @@ export default function InstallmentManager({
               size="sm"
               onClick={handleRecalculate}
             >
-              Recalcular
+              Recalculate
             </Button>
           )}
         </CardTitle>
@@ -291,17 +291,17 @@ export default function InstallmentManager({
             checked={createInstallments}
             onCheckedChange={handleCreateInstallmentsChange}
           />
-          <Label htmlFor="create-installments">Criar parcelamento</Label>
+          <Label htmlFor="create-installments">Create installment plan</Label>
           {mode === 'edit' && initialInstallments.length > 0 && (
             <span className="text-sm text-gray-500">
-              (Desmarque para remover todas as parcelas)
+              (Uncheck to remove all installments)
             </span>
           )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="installments-count">Número de Parcelas</Label>
+            <Label htmlFor="installments-count">Number of Installments</Label>
             <Select
               value={numberOfInstallments.toString()}
               onValueChange={(value) => setNumberOfInstallments(parseInt(value))}
@@ -320,7 +320,7 @@ export default function InstallmentManager({
           </div>
 
           <div>
-            <Label htmlFor="first-due-date">Primeiro Vencimento</Label>
+            <Label htmlFor="first-due-date">First Due Date</Label>
             <Input
               id="first-due-date"
               type="date"
@@ -337,14 +337,14 @@ export default function InstallmentManager({
               checked={manualOverride}
               onCheckedChange={(checked) => setManualOverride(checked === true)}
             />
-            <Label htmlFor="manual-override">Editar valores manualmente</Label>
+            <Label htmlFor="manual-override">Edit values manually</Label>
           </div>
         )}
 
         {/* Installment Preview */}
         <div className="space-y-2">
           <h4 className="font-medium">
-            {mode === 'edit' ? 'Parcelas Existentes' : 'Preview das Parcelas'}
+            {mode === 'edit' ? 'Existing Installments' : 'Installments Preview'}
           </h4>
           <div className="max-h-60 overflow-y-auto space-y-2">
             {installmentPlan.map((installment, index) => (
@@ -352,7 +352,7 @@ export default function InstallmentManager({
                 <div>
                   <Label className="text-xs flex items-center gap-1">
                     {getStatusIcon(installment.status)}
-                    Parcela {installment.parcelNumber || index + 1}
+                    Installment {installment.parcelNumber || index + 1}
                   </Label>
                   <Input
                     type="number"
@@ -364,7 +364,7 @@ export default function InstallmentManager({
                   />
                 </div>
                 <div>
-                  <Label className="text-xs">Vencimento</Label>
+                  <Label className="text-xs">Due Date</Label>
                   <Input
                     type="date"
                     value={installment.dueDate || ''}
@@ -376,7 +376,7 @@ export default function InstallmentManager({
                 <div className="flex items-center">
                   <span className="text-xs text-gray-500">
                     {installment.status === 'paid' && installment.paidDate
-                      ? `Pago em ${format(new Date(installment.paidDate), 'dd/MM')}`
+                      ? `Paid on ${format(new Date(installment.paidDate), 'dd/MM')}`
                       : installment.dueDate
                         ? format(new Date(installment.dueDate), 'dd/MM')
                         : '-'
@@ -392,7 +392,7 @@ export default function InstallmentManager({
                       onClick={() => handleMarkAsPaid(installment.id!, index)}
                       className="h-8 text-xs"
                     >
-                      Marcar Pago
+                      Mark as Paid
                     </Button>
                   )}
                 </div>
@@ -404,13 +404,13 @@ export default function InstallmentManager({
         {/* Validation Summary */}
         <div className={`p-3 rounded ${validation.isValid ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
           <div className="flex justify-between text-sm">
-            <span>Total das Parcelas:</span>
+            <span>Total Installments:</span>
             <span className={validation.isValid ? 'text-green-600' : 'text-red-600'}>
               R$ {validation.totalAmount.toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between text-sm">
-            <span>Valor do Serviço:</span>
+            <span>Service Value:</span>
             <span>R$ {validation.expectedAmount.toFixed(2)}</span>
           </div>
           {!validation.isValid && (

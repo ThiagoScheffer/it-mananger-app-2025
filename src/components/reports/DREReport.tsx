@@ -78,7 +78,7 @@ export function DREReport({ report, setReport }: DREReportProps) {
 
             // Create the report
             const newReport: Report = {
-                title: "Demonstrativo de Resultado do Exercício (DRE)",
+                title: "Statement of Financial Result (DRE)",
                 period: `${format(new Date(), "MMMM yyyy")}`,
                 grossRevenue,
                 costs,
@@ -89,32 +89,32 @@ export function DREReport({ report, setReport }: DREReportProps) {
             };
 
             setReport(newReport);
-            toast.success("Relatório DRE gerado com sucesso");
+            toast.success("DRE Report generated successfully");
         } catch (error) {
-            console.error("Erro ao gerar relatório DRE:", error);
-            toast.error("Erro ao gerar relatório DRE");
+            console.error("Error generating DRE report:", error);
+            toast.error("Error generating DRE report");
         }
     };
 
     const downloadAsExcel = () => {
         if (!report) {
-            toast.error("Nenhum relatório para exportar");
+            toast.error("No report to export");
             return;
         }
 
         try {
             // Prepare worksheet data
             const wsData = [
-                ["Demonstrativo de Resultado do Exercício (DRE)"],
-                [`Período: ${report.period}`],
+                ["Statement of Financial Result (DRE)"],
+                [`Period: ${report.period}`],
                 [""], // Empty row for spacing
-                ["Descrição", "Valor (R$)"], // Header row
-                ["Receita Bruta", report.grossRevenue],
-                ["Custos (CMV)", report.costs],
-                ["Lucro Bruto", report.grossProfit],
-                ["Despesas Operacionais", report.operationalExpenses],
-                ["Lucro Líquido", report.netProfit],
-                ["Margem de Lucro (%)", report.profitMargin],
+                ["Description", "Value (R$)"], // Header row
+                ["Gross Revenue", report.grossRevenue],
+                ["Costs (COGS)", report.costs],
+                ["Gross Profit", report.grossProfit],
+                ["Operational Expenses", report.operationalExpenses],
+                ["Net Profit", report.netProfit],
+                ["Profit Margin (%)", report.profitMargin],
             ];
 
             // Create worksheet
@@ -179,25 +179,25 @@ export function DREReport({ report, setReport }: DREReportProps) {
             XLSX.utils.book_append_sheet(wb, ws, "DRE");
             XLSX.writeFile(wb, `DRE_${report.period.replace(/[^a-z0-9]/gi, '_')}.xlsx`);
 
-            toast.success("Relatório exportado como Excel");
+            toast.success("Report exported as Excel");
         } catch (error) {
-            console.error("Erro ao exportar para Excel:", error);
-            toast.error("Falha ao exportar relatório");
+            console.error("Error exporting to Excel:", error);
+            toast.error("Failed to export report");
         }
     };
 
     const downloadAsPDF = async () => {
-       if (!report) {
-            toast.error("Nenhum relatório para exportar");
+        if (!report) {
+            toast.error("No report to export");
             return;
         }
 
         try {
-            toast.info("Gerando PDF, aguarde...");
+            toast.info("Generating PDF, please wait...");
             setIsGeneratingPDF(true);
 
             const reportElement = document.getElementById('dre-report-content');
-            if (!reportElement) throw new Error("Elemento do relatório não encontrado");
+            if (!reportElement) throw new Error("Report element not found");
 
             const canvas = await html2canvas(reportElement, {
                 scale: 2,
@@ -227,10 +227,10 @@ export function DREReport({ report, setReport }: DREReportProps) {
             }
 
             pdf.save(`DRE_${report.period.replace(/[^a-z0-9]/gi, '_')}.pdf`);
-            toast.success("Relatório exportado como PDF");
+            toast.success("Report exported as PDF");
         } catch (error) {
-            console.error("Erro ao gerar PDF:", error);
-            toast.error("Falha ao exportar PDF");
+            console.error("Error generating PDF:", error);
+            toast.error("Failed to export PDF");
         } finally {
             setIsGeneratingPDF(false);
         }
@@ -248,15 +248,15 @@ export function DREReport({ report, setReport }: DREReportProps) {
                 <CardHeader>
                     <CardTitle className="flex items-center">
                         <FileText className="mr-2 h-5 w-5" />
-                        Relatório DRE
+                        DRE Report
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p className="text-sm text-muted-foreground mb-4">
-                        Gere um relatório DRE (Demonstrativo de Resultado do Exercício) com base nos serviços e despesas registrados.
+                        Generate a DRE report based on registered services and expenses.
                     </p>
                     <Button className="anibtn-drawstrokelong" onClick={generateDREReport}>
-                        Gerar Relatório DRE
+                        Generate DRE Report
                     </Button>
                 </CardContent>
             </Card>
@@ -267,47 +267,47 @@ export function DREReport({ report, setReport }: DREReportProps) {
                         <CardTitle className="flex justify-between">
                             <span>{report.title}</span>
                         </CardTitle>
-                        <p className="text-sm text-muted-foreground">Período: {report.period}</p>
+                        <p className="text-sm text-muted-foreground">Period: {report.period}</p>
                     </CardHeader>
                     <CardContent>
                         <Tabs defaultValue="summary" className="w-full">
                             <TabsList>
-                                <TabsTrigger value="summary">Resumo</TabsTrigger>
-                                <TabsTrigger value="detailed">Detalhado</TabsTrigger>
+                                <TabsTrigger value="summary">Summary</TabsTrigger>
+                                <TabsTrigger value="detailed">Detailed</TabsTrigger>
                             </TabsList>
                             <TabsContent value="summary" className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                     <div className="bg-gray-50 p-4 rounded-lg border">
-                                        <h3 className="font-medium text-lg">Receitas e Custos</h3>
+                                        <h3 className="font-medium text-lg">Revenues and Costs</h3>
                                         <div className="space-y-2 mt-2">
                                             <div className="flex justify-between">
-                                                <span>Receita Bruta:</span>
+                                                <span>Gross Revenue:</span>
                                                 <span className="font-medium">R$ {report.grossRevenue.toFixed(2)}</span>
                                             </div>
                                             <div className="flex justify-between text-red-500">
-                                                <span>(-) Custos (CMV):</span>
+                                                <span>(-) Costs (COGS):</span>
                                                 <span className="font-medium">R$ {report.costs.toFixed(2)}</span>
                                             </div>
                                             <div className="flex justify-between border-t pt-2 font-medium">
-                                                <span>= Lucro Bruto:</span>
+                                                <span>= Gross Profit:</span>
                                                 <span>R$ {report.grossProfit.toFixed(2)}</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="bg-gray-50 p-4 rounded-lg border">
-                                        <h3 className="font-medium text-lg">Despesas e Lucro</h3>
+                                        <h3 className="font-medium text-lg">Expenses and Profit</h3>
                                         <div className="space-y-2 mt-2">
                                             <div className="flex justify-between text-red-500">
-                                                <span>(-) Despesas Operacionais:</span>
+                                                <span>(-) Operational Expenses:</span>
                                                 <span className="font-medium">R$ {report.operationalExpenses.toFixed(2)}</span>
                                             </div>
                                             <div className="flex justify-between border-t pt-2 font-medium text-green-600">
-                                                <span>= Lucro Líquido:</span>
+                                                <span>= Net Profit:</span>
                                                 <span>R$ {report.netProfit.toFixed(2)}</span>
                                             </div>
                                             <div className="flex justify-between mt-4">
-                                                <span>Margem de Lucro:</span>
+                                                <span>Profit Margin:</span>
                                                 <span className={report.profitMargin > 0 ? "font-medium text-green-600" : "font-medium text-red-500"}>
                                                     {report.profitMargin.toFixed(2)}%
                                                 </span>
@@ -320,33 +320,33 @@ export function DREReport({ report, setReport }: DREReportProps) {
                                 <table className="w-full mt-4">
                                     <thead>
                                         <tr className="text-left border-b">
-                                            <th className="pb-2">Descrição</th>
-                                            <th className="pb-2 text-right">Valor (R$)</th>
+                                            <th className="pb-2">Description</th>
+                                            <th className="pb-2 text-right">Value (R$)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr className="border-b">
-                                            <td className="py-2 font-medium">Receita Bruta</td>
+                                            <td className="py-2 font-medium">Gross Revenue</td>
                                             <td className="py-2 text-right">{report.grossRevenue.toFixed(2)}</td>
                                         </tr>
                                         <tr className="border-b text-red-500">
-                                            <td className="py-2">(-) Custos (CMV)</td>
+                                            <td className="py-2">(-) Costs (COGS)</td>
                                             <td className="py-2 text-right">{report.costs.toFixed(2)}</td>
                                         </tr>
                                         <tr className="border-b font-medium">
-                                            <td className="py-2">= Lucro Bruto</td>
+                                            <td className="py-2">= Gross Profit</td>
                                             <td className="py-2 text-right">{report.grossProfit.toFixed(2)}</td>
                                         </tr>
                                         <tr className="border-b text-red-500">
-                                            <td className="py-2">(-) Despesas Operacionais</td>
+                                            <td className="py-2">(-) Operational Expenses</td>
                                             <td className="py-2 text-right">{report.operationalExpenses.toFixed(2)}</td>
                                         </tr>
                                         <tr className="border-b font-medium text-green-600">
-                                            <td className="py-2">= Lucro Líquido</td>
+                                            <td className="py-2">= Net Profit</td>
                                             <td className="py-2 text-right">{report.netProfit.toFixed(2)}</td>
                                         </tr>
                                         <tr>
-                                            <td className="py-2">Margem de Lucro (%)</td>
+                                            <td className="py-2">Profit Margin (%)</td>
                                             <td className={`py-2 text-right ${report.profitMargin > 0 ? "text-green-600" : "text-red-500"}`}>
                                                 {report.profitMargin.toFixed(2)}%
                                             </td>

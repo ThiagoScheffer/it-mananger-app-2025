@@ -1,6 +1,6 @@
 
 import type { AppState } from '@/types';
-import { 
+import {
     getUsers, getClients, getMaterials, getTechnicians, getServices,
     getServiceTechnicians, getServiceMaterials, getOrders, getOrderMaterials,
     getExpenses, getPayments, getInstallments, getEquipments, getAppointments,
@@ -265,7 +265,7 @@ export function createBackup(): BackupData {
 
     const serviceTypes = getServiceTypes();
     const dataString = JSON.stringify(data);
-    
+
     const backup: BackupData = {
         metadata: {
             version: '3.0.0',
@@ -287,7 +287,7 @@ export function exportBackupToFile(): void {
         const backup = createBackup();
         const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
-        
+
         const link = document.createElement('a');
         link.href = url;
         link.download = `gestor-pro-backup-${new Date().toISOString().split('T')[0]}.json`;
@@ -295,7 +295,7 @@ export function exportBackupToFile(): void {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-        
+
         console.log('Backup exported successfully');
     } catch (error) {
         console.error('Error exporting backup:', error);
@@ -367,11 +367,11 @@ export function validateBackup(backup: BackupData): BackupValidationResult {
         workLogs: backup.data.technicianWorkLogs?.length || 0
     } : null;
 
-    return { 
-        isValid: errors.length === 0, 
-        errors, 
+    return {
+        isValid: errors.length === 0,
+        errors,
         warnings,
-        stats 
+        stats
     };
 }
 
@@ -381,9 +381,9 @@ export function restoreFromBackup(backup: BackupData, isDryRun: boolean = false)
         // Validate backup first
         const validation = validateBackup(backup);
         if (!validation.isValid) {
-            return { 
-                success: false, 
-                errors: validation.errors, 
+            return {
+                success: false,
+                errors: validation.errors,
                 warnings: validation.warnings,
                 importedCounts: {},
                 skippedCounts: {},
@@ -401,49 +401,49 @@ export function restoreFromBackup(backup: BackupData, isDryRun: boolean = false)
 
             // Restore all data
             const { data } = backup;
-            
+
             saveUsers(data.users);
             importedCounts.users = data.users.length;
-            
+
             saveClients(data.clients);
             importedCounts.clients = data.clients.length;
-            
+
             saveMaterials(data.materials);
             importedCounts.materials = data.materials.length;
-            
+
             saveTechnicians(data.technicians);
             importedCounts.technicians = data.technicians.length;
-            
+
             saveServices(data.services);
             importedCounts.services = data.services.length;
-            
+
             saveServiceTechnicians(data.serviceTechnicians);
             importedCounts.serviceTechnicians = data.serviceTechnicians.length;
-            
+
             saveServiceMaterials(data.serviceMaterials);
             importedCounts.serviceMaterials = data.serviceMaterials.length;
-            
+
             saveOrders(data.orders);
             importedCounts.orders = data.orders.length;
-            
+
             saveOrderMaterials(data.orderMaterials);
             importedCounts.orderMaterials = data.orderMaterials.length;
-            
+
             saveExpenses(data.expenses);
             importedCounts.expenses = data.expenses.length;
-            
+
             savePayments(data.payments);
             importedCounts.payments = data.payments.length;
-            
+
             saveInstallments(data.installments);
             importedCounts.installments = data.installments.length;
-            
+
             saveEquipments(data.equipments);
             importedCounts.equipments = data.equipments.length;
-            
+
             saveAppointments(data.appointments);
             importedCounts.appointments = data.appointments.length;
-            
+
             saveFinancialData(data.financialData);
             importedCounts.financialData = 1;
 
@@ -489,7 +489,7 @@ export function restoreFromBackup(backup: BackupData, isDryRun: boolean = false)
             importedCounts.installments = data.installments.length;
             importedCounts.equipments = data.equipments.length;
             importedCounts.appointments = data.appointments.length;
-            
+
             if (data.stockMovements) {
                 importedCounts.stockMovements = data.stockMovements.length;
             }
@@ -498,19 +498,19 @@ export function restoreFromBackup(backup: BackupData, isDryRun: boolean = false)
             }
         }
 
-        return { 
-            success: true, 
-            errors: [], 
+        return {
+            success: true,
+            errors: [],
             warnings: validation.warnings,
             importedCounts,
             skippedCounts,
             isDryRun
         };
-        
+
     } catch (error) {
         console.error('Error restoring backup:', error);
-        return { 
-            success: false, 
+        return {
+            success: false,
             errors: ['Failed to restore backup: ' + (error as Error).message],
             warnings: [],
             importedCounts: {},
@@ -524,7 +524,7 @@ export function restoreFromBackup(backup: BackupData, isDryRun: boolean = false)
 export function importBackupFromFile(file: File): Promise<BackupImportResult> {
     return new Promise((resolve) => {
         const reader = new FileReader();
-        
+
         reader.onload = (event) => {
             try {
                 const content = event.target?.result as string;
@@ -532,8 +532,8 @@ export function importBackupFromFile(file: File): Promise<BackupImportResult> {
                 const result = restoreFromBackup(backup, false);
                 resolve(result);
             } catch (error) {
-                resolve({ 
-                    success: false, 
+                resolve({
+                    success: false,
                     errors: ['Invalid backup file format: ' + (error as Error).message],
                     warnings: [],
                     importedCounts: {},
@@ -542,10 +542,10 @@ export function importBackupFromFile(file: File): Promise<BackupImportResult> {
                 });
             }
         };
-        
+
         reader.onerror = () => {
-            resolve({ 
-                success: false, 
+            resolve({
+                success: false,
                 errors: ['Failed to read backup file'],
                 warnings: [],
                 importedCounts: {},
@@ -553,7 +553,7 @@ export function importBackupFromFile(file: File): Promise<BackupImportResult> {
                 isDryRun: false
             });
         };
-        
+
         reader.readAsText(file);
     });
 }
@@ -563,14 +563,14 @@ export function createAutomaticBackup(): void {
     try {
         const backup = createBackup();
         const backupKey = `gestor-pro-auto-backup-${new Date().toISOString().split('T')[0]}`;
-        
+
         // Keep only last 7 days of automatic backups
         const keys = Object.keys(localStorage).filter(key => key.startsWith('gestor-pro-auto-backup-'));
         if (keys.length >= 7) {
             const oldestKey = keys.sort()[0];
             localStorage.removeItem(oldestKey);
         }
-        
+
         localStorage.setItem(backupKey, JSON.stringify(backup));
         console.log('Automatic backup created:', backupKey);
     } catch (error) {
@@ -594,18 +594,18 @@ export function restoreFromAutomaticBackup(backupKey: string): { success: boolea
         if (!backupData) {
             return { success: false, errors: ['Backup not found'] };
         }
-        
+
         const backup: BackupData = JSON.parse(backupData);
         const result = restoreFromBackup(backup, false);
-        
-        return { 
-            success: result.success, 
-            errors: result.errors 
+
+        return {
+            success: result.success,
+            errors: result.errors
         };
     } catch (error) {
-        return { 
-            success: false, 
-            errors: ['Failed to restore automatic backup: ' + (error as Error).message] 
+        return {
+            success: false,
+            errors: ['Failed to restore automatic backup: ' + (error as Error).message]
         };
     }
 }

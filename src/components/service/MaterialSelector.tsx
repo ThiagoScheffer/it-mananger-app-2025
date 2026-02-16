@@ -22,11 +22,11 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
     const selectRef = useRef<HTMLDivElement>(null);
 
     // Find full material object when needed
-    const getMaterial = (materialId: string) => 
-    materials.find(m => m.id === materialId);
+    const getMaterial = (materialId: string) =>
+        materials.find(m => m.id === materialId);
 
     const GetMaterialinfo = (materials: ServiceMaterial[], materialId: string) => {
-        const material = materials.find(m => m.materialId === materialId); 
+        const material = materials.find(m => m.materialId === materialId);
         return material ? {
             ...material,
             material: getMaterial(material.materialId) // Fetch full material details
@@ -83,18 +83,18 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
     const handleAddMaterial = (e: React.MouseEvent) => {
         e.stopPropagation();
         if (!selectedMaterial) {
-            toast.error("Selecione um material");
+            toast.error("Select a material");
             return;
         }
 
         if (quantity <= 0) {
-            toast.error("A quantidade deve ser maior que zero");
+            toast.error("Quantity must be greater than zero");
             return;
         }
 
         const existingMaterial = selectedMaterials.find(sm => sm.materialId === selectedMaterial.id);
         if (existingMaterial) {
-            toast.error("Este material já foi adicionado");
+            toast.error("This material has already been added");
             return;
         }
         const now = new Date().toISOString();
@@ -105,7 +105,7 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
             material: selectedMaterial,
             quantity: quantity,
             priceSnapshot: selectedMaterial.sellingPrice,
-             createdAt: now, // required
+            createdAt: now, // required
             updatedAt: now,  // required
         };
 
@@ -113,7 +113,7 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
         setSelectedMaterial(null);
         setSearchTerm("");
         setQuantity(1);
-        toast.success("Material adicionado");
+        toast.success("Material added");
     };
 
     const handleMaterialSelect = (material: any) => {
@@ -125,7 +125,7 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
     const handleRemoveMaterial = (materialId: string) => {
         const updated = selectedMaterials.filter(sm => sm.materialId !== materialId);
         onMaterialsChange(updated);
-        toast.success("Material removido");
+        toast.success("Material removed");
     };
 
     const handleQuantityChange = (materialId: string, newQuantity: number) => {
@@ -159,7 +159,7 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
 
     return (
         <div className="space-y-4">
-            <h3 className="text-lg font-medium">Materiais</h3>
+            <h3 className="text-lg font-medium">Materials</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-2">
@@ -167,7 +167,7 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
                     <div className="relative" ref={selectRef}>
                         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
-                            placeholder="Buscar por modelo ou tipo..."
+                            placeholder="Search by model or type..."
                             className="pl-9"
                             value={searchTerm}
                             onChange={(e) => {
@@ -189,7 +189,7 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
                                                     {type}
                                                 </Badge>
                                                 <span className="text-muted-foreground">
-                                                    ({materials.length} {materials.length === 1 ? 'item' : 'itens'})
+                                                    ({materials.length} {materials.length === 1 ? 'item' : 'items'})
                                                 </span>
                                             </div>
                                             {materials.map((material) => (
@@ -208,7 +208,7 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
                                     ))
                                 ) : (
                                     <div className="px-4 py-2 text-sm text-muted-foreground">
-                                        Nenhum material encontrado
+                                        No materials found
                                     </div>
                                 )}
                             </div>
@@ -217,7 +217,7 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
                 </div>
 
                 <div>
-                    <label className="text-sm font-medium">Quantidade</label>
+                    <label className="text-sm font-medium">Quantity</label>
                     <Input
                         type="number"
                         min="1"
@@ -233,7 +233,7 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
                         type="button"
                         disabled={!selectedMaterial}
                     >
-                        Adicionar Material
+                        Add Material
                     </Button>
                 </div>
             </div>
@@ -244,55 +244,55 @@ export default function MaterialSelector({ selectedMaterials, onMaterialsChange 
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Material</TableHead>
-                                <TableHead>Quantidade</TableHead>
-                                <TableHead>Preço Unit.</TableHead>
+                                <TableHead>Quantity</TableHead>
+                                <TableHead>Unit Price</TableHead>
                                 <TableHead>Total</TableHead>
                                 <TableHead></TableHead>
                             </TableRow>
                         </TableHeader>
-                       <TableBody>
-                                {selectedMaterials.map((sm) => {
-                                    const material = getMaterial(sm.materialId);
-                                    const smWithMaterial = GetMaterialinfo(selectedMaterials, sm.materialId);
-                                    
-                                    if (!smWithMaterial || !material) return null; // Skip if material not found
+                        <TableBody>
+                            {selectedMaterials.map((sm) => {
+                                const material = getMaterial(sm.materialId);
+                                const smWithMaterial = GetMaterialinfo(selectedMaterials, sm.materialId);
 
-                                    return (
-                                        <TableRow key={sm.materialId}>
-                                            <TableCell>
-                                                <div className="flex items-center">
-                                                    <Badge className={`mr-2 ${getMaterialTypeColor(material.type)}`}>
-                                                        {material.type}
-                                                    </Badge>
-                                                    {material.model}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Input
-                                                    type="number"
-                                                    min="1"
-                                                    value={sm.quantity}
-                                                    onChange={(e) => handleQuantityChange(sm.materialId, parseInt(e.target.value) || 1)}
-                                                    className="w-20"
-                                                />
-                                            </TableCell>
-                                            <TableCell>{formatCurrency(sm.priceSnapshot)}</TableCell>
-                                            <TableCell>{formatCurrency(sm.priceSnapshot * sm.quantity)}</TableCell>
-                                            <TableCell>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => handleRemoveMaterial(sm.materialId)}
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
+                                if (!smWithMaterial || !material) return null; // Skip if material not found
+
+                                return (
+                                    <TableRow key={sm.materialId}>
+                                        <TableCell>
+                                            <div className="flex items-center">
+                                                <Badge className={`mr-2 ${getMaterialTypeColor(material.type)}`}>
+                                                    {material.type}
+                                                </Badge>
+                                                {material.model}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input
+                                                type="number"
+                                                min="1"
+                                                value={sm.quantity}
+                                                onChange={(e) => handleQuantityChange(sm.materialId, parseInt(e.target.value) || 1)}
+                                                className="w-20"
+                                            />
+                                        </TableCell>
+                                        <TableCell>{formatCurrency(sm.priceSnapshot)}</TableCell>
+                                        <TableCell>{formatCurrency(sm.priceSnapshot * sm.quantity)}</TableCell>
+                                        <TableCell>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handleRemoveMaterial(sm.materialId)}
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                             <TableRow>
                                 <TableCell colSpan={3} className="font-medium">
-                                    Total dos Materiais:
+                                    Total Materials Cost:
                                 </TableCell>
                                 <TableCell className="font-medium">
                                     {formatCurrency(totalMaterialCost)}

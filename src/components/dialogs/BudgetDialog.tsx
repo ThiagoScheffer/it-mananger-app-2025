@@ -63,15 +63,15 @@ interface ServiceMaterial {
 }
 
 const ServiceTypeOption = getServiceTypes();
-const profileTypes = ["Desktop", "Notebook", "Material", "Serviços", "-"];
-const serviceTypes = ["Editor", "Caseiro", "Peças", "Adobe", "Remoto", "-"];
-const profileLevels = ["Entrada", "Avançada", "Profissional", "Workstation", "Office", "-"];
+const profileTypes = ["Desktop", "Notebook", "Material", "Services", "-"];
+const serviceTypes = ["Editor", "Home", "Parts", "Adobe", "Remote", "-"];
+const profileLevels = ["Entry", "Advanced", "Professional", "Workstation", "Office", "-"];
 
-    // template
-    const templateOptions = [
-        { value: "ModelSimples.docx", label: "Modelo Padrão" },
-        { value: "ModelCompleto.docx", label: "Modelo Build" }
-       // { value: "Model3.docx", label: "Modelo Detalhado" }
+// template
+const templateOptions = [
+    { value: "ModelSimples.docx", label: "Standard Model" },
+    { value: "ModelCompleto.docx", label: "Build Model" }
+    // { value: "Model3.docx", label: "Modelo Detalhado" }
 ];
 
 export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
@@ -139,50 +139,50 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
     };
 
     const handleServiceSelect = (serviceId: string) => {
-    setSelectedServiceId(serviceId);
+        setSelectedServiceId(serviceId);
 
-    const service = services.find(s => s.id === serviceId);
-    if (service) {
-        setSelectedServiceTypes(service.serviceTypes || []);
+        const service = services.find(s => s.id === serviceId);
+        if (service) {
+            setSelectedServiceTypes(service.serviceTypes || []);
 
-        // Correct way: load materials from serviceMaterials
-        const serviceMaterials = getServiceMaterialsByServiceId(service.id);
-                                  setSelectedMaterials(serviceMaterials.map(sm => ({
-                                      ...sm,
-                                      material: getMaterialById(sm.materialId)
-                                  })));
+            // Correct way: load materials from serviceMaterials
+            const serviceMaterials = getServiceMaterialsByServiceId(service.id);
+            setSelectedMaterials(serviceMaterials.map(sm => ({
+                ...sm,
+                material: getMaterialById(sm.materialId)
+            })));
 
-        setFormData({
-            servicePrice: service.servicePrice || 0,
-            pickupDeliveryPrice: service.pickupDeliveryPrice || 0
-        });
+            setFormData({
+                servicePrice: service.servicePrice || 0,
+                pickupDeliveryPrice: service.pickupDeliveryPrice || 0
+            });
 
-        // Auto-detect profile type based on service description
-        const detectedProfile = profileTypes.find(type =>
-            service.description?.includes(type)
-        ) || "";
-        setSelectedProfileType(detectedProfile);
+            // Auto-detect profile type based on service description
+            const detectedProfile = profileTypes.find(type =>
+                service.description?.includes(type)
+            ) || "";
+            setSelectedProfileType(detectedProfile);
 
-        // Auto-detect service type
-        let detectedServiceType = "";
-        if (service.name?.includes("Desktop")) detectedServiceType = "desktop";
-        else if (service.name?.includes("Notebook")) detectedServiceType = "notebook";
-        else if (serviceMaterials.length > 0) detectedServiceType = "material";
-        else detectedServiceType = "serviços";
-        setSelectedServiceType(detectedServiceType);
-    } else {
-        // Reset state if no service found
-        setSelectedServiceTypes([]);
-        setSelectedMaterials([]);
-        setFormData({ servicePrice: 0, pickupDeliveryPrice: 0 });
-    }
-};
+            // Auto-detect service type
+            let detectedServiceType = "";
+            if (service.name?.includes("Desktop")) detectedServiceType = "desktop";
+            else if (service.name?.includes("Notebook")) detectedServiceType = "notebook";
+            else if (serviceMaterials.length > 0) detectedServiceType = "material";
+            else detectedServiceType = "services";
+            setSelectedServiceType(detectedServiceType);
+        } else {
+            // Reset state if no service found
+            setSelectedServiceTypes([]);
+            setSelectedMaterials([]);
+            setFormData({ servicePrice: 0, pickupDeliveryPrice: 0 });
+        }
+    };
 
     const calculateTotals = useMemo(() => {
         const selectedService = services.find(s => s.id === selectedServiceId);
 
         const serviceTypesSum = selectedServiceTypes.reduce((sum, type) => {
-           
+
             const typeOption = ServiceTypeOption.find(opt => opt.name === type);
             return sum + (typeOption?.price || 0);
         }, 0);
@@ -209,13 +209,13 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
 
     const generateDocx = async () => {
         if (!selectedClientId) {
-            toast.error("Selecione um cliente para gerar o orçamento");
+            toast.error("Select a client to generate the budget");
             return;
         }
 
         const client = clients.find((c) => c.id === selectedClientId);
         if (!client) {
-            toast.error("Selecione um cliente válido");
+            toast.error("Select a valid client");
             return;
         }
         // const client = clients.find((c) => c.id === selectedClientId);
@@ -267,8 +267,8 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                 Data: format(new Date(), "dd/MM/yyyy"),
                 ValidUntil: format(new Date(validUntil), "dd/MM/yyyy"),
                 ClientName: client?.name || "",
-                ServiceType: service?.name || "Serviço personalizado",
-                ForType: "Uso geral",
+                ServiceType: service?.name || "Custom Service",
+                ForType: "General Use",
                 Profiletype: selectedProfileType || "Desktop",
                 WindowsVersion: "Windows 11 Custom",
                 email: client?.email || "",
@@ -285,8 +285,8 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                 budgetData[`Qt${index + 1}`] = item.quantity;
                 budgetData[`Desc${index + 1}`] = item.description;
                 budgetData[`Price${index + 1}`] = item.price.toFixed(2);
-               // console.log(budgetData[`Qt${index + 1}`], index + 1);
-               // console.log(budgetData[`Desc${index + 1}`], index + 1);
+                // console.log(budgetData[`Qt${index + 1}`], index + 1);
+                // console.log(budgetData[`Desc${index + 1}`], index + 1);
                 //console.log(budgetData[`Price${index + 1}`], index + 1);
             });
 
@@ -296,8 +296,8 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                 budgetData[`Desc${i + 1}`] = "";
                 budgetData[`Price${i + 1}`] = "";
                 //console.log(budgetData[`Qt${i + 1}`], i + 1);
-               // console.log(budgetData[`Desc${i + 1}`], i + 1);
-               // console.log(budgetData[`Price${i + 1}`], i + 1);
+                // console.log(budgetData[`Desc${i + 1}`], i + 1);
+                // console.log(budgetData[`Price${i + 1}`], i + 1);
             }
 
             doc.render(budgetData);
@@ -308,24 +308,24 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                 compression: "DEFLATE"
             });
 
-            const clientName = client?.name.replace(/[^a-z0-9]/gi, "_") || "cliente";
-            saveAs(out, `Orcamento_${clientName}_${format(new Date(), "yyyy-MM-dd")}.docx`);
+            const clientName = client?.name.replace(/[^a-z0-9]/gi, "_") || "client";
+            saveAs(out, `Budget_${clientName}_${format(new Date(), "yyyy-MM-dd")}.docx`);
 
-            toast.success("Orçamento gerado em DOCX");
+            toast.success("Budget generated in DOCX");
         } catch (error) {
             console.error("Error generating document:", error);
-            toast.error("Erro ao gerar o documento");
+            toast.error("Error generating document");
         }
     };
 
     const generatePdf = async () => {
         if (!previewRef.current) {
-            toast.error("Nada para exportar");
+            toast.error("Nothing to export");
             return;
         }
 
         try {
-            toast.info("Gerando PDF, aguarde...");
+            toast.info("Generating PDF, please wait...");
 
             const client = clients.find((c) => c.id === selectedClientId);
             const pdf = new jsPDF("p", "pt", "a4");
@@ -346,16 +346,16 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
 
             pdf.addImage(imgData, "PNG", 20, 20, imgWidth, imgHeight);
             pdf.save(
-                `Orcamento_${client?.name.replace(/[^a-z0-9]/gi, "_") || "cliente"}_${format(
+                `Budget_${client?.name.replace(/[^a-z0-9]/gi, "_") || "client"}_${format(
                     new Date(),
                     "yyyy-MM-dd"
                 )}.pdf`
             );
 
-            toast.success("PDF gerado com sucesso!");
+            toast.success("PDF generated successfully!");
         } catch (error) {
             console.error("Error generating PDF:", error);
-            toast.error("Erro ao gerar PDF");
+            toast.error("Error generating PDF");
         }
     };
 
@@ -363,18 +363,18 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className="text-xl">Criar Novo Orçamento</DialogTitle>
+                    <DialogTitle className="text-xl">Create New Budget</DialogTitle>
                 </DialogHeader>
 
                 <div className="space-y-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="template">Modelo de Documento</Label>
+                        <Label htmlFor="template">Document Model</Label>
                         <Select
                             value={selectedTemplate}
                             onValueChange={setSelectedTemplate}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Selecione um modelo" />
+                                <SelectValue placeholder="Select a model" />
                             </SelectTrigger>
                             <SelectContent>
                                 {templateOptions.map((template) => (
@@ -387,13 +387,13 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="client">Cliente</Label>
+                            <Label htmlFor="client">Client</Label>
                             <Select
                                 value={selectedClientId}
                                 onValueChange={setSelectedClientId}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Selecione um cliente" />
+                                    <SelectValue placeholder="Select a client" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {clients
@@ -408,7 +408,7 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="service">Serviço (Opcional)</Label>
+                            <Label htmlFor="service">Service (Optional)</Label>
                             <Select
                                 value={selectedServiceId}
                                 onValueChange={handleServiceSelect}
@@ -417,8 +417,8 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                                 <SelectTrigger>
                                     <SelectValue placeholder={
                                         selectedClientId
-                                            ? "Selecione um serviço"
-                                            : "Selecione um cliente primeiro"
+                                            ? "Select a service"
+                                            : "Select a client first"
                                     } />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -433,8 +433,8 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                                     ) : (
                                         <SelectItem value="" disabled>
                                             {selectedClientId
-                                                ? "Nenhum serviço encontrado para este cliente"
-                                                : "Selecione um cliente primeiro"}
+                                                ? "No service found for this client"
+                                                : "Select a client first"}
                                         </SelectItem>
                                     )}
                                 </SelectContent>
@@ -444,13 +444,13 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="profileType">Tipo de Perfil</Label>
+                            <Label htmlFor="profileType">Profile Type</Label>
                             <Select
                                 value={selectedProfileType}
                                 onValueChange={setSelectedProfileType}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Selecione o tipo de perfil" />
+                                    <SelectValue placeholder="Select profile type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {profileTypes.filter(t => t).map((type) => (
@@ -463,13 +463,13 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="serviceType">Tipo de Serviço</Label>
+                            <Label htmlFor="serviceType">Service Type</Label>
                             <Select
                                 value={selectedServiceType}
                                 onValueChange={setSelectedServiceType}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Selecione o tipo de serviço" />
+                                    <SelectValue placeholder="Select service type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {serviceTypes.filter(t => t).map((type) => (
@@ -482,13 +482,13 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="profileLevel">Nível do Perfil</Label>
+                            <Label htmlFor="profileLevel">Profile Level</Label>
                             <Select
                                 value={selectedProfileLevel}
                                 onValueChange={setSelectedProfileLevel}
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Selecione o nível" />
+                                    <SelectValue placeholder="Select level" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {profileLevels.filter(t => t).map((level) => (
@@ -502,7 +502,7 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="validUntil">Válido até</Label>
+                        <Label htmlFor="validUntil">Valid until</Label>
                         <Input
                             id="validUntil"
                             type="date"
@@ -512,7 +512,7 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                     </div>
 
                     <div className="space-y-2">
-                        <Label>Itens do Orçamento</Label>
+                        <Label>Budget Items</Label>
                         <div className="space-y-4">
                             {items.map((item) => (
                                 <div
@@ -520,7 +520,7 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                                     className="grid grid-cols-12 gap-2 items-end"
                                 >
                                     <div className="col-span-2">
-                                        <Label htmlFor={`quantity-${item.id}`}>Quantidade</Label>
+                                        <Label htmlFor={`quantity-${item.id}`}>Quantity</Label>
                                         <Input
                                             id={`quantity-${item.id}`}
                                             type="number"
@@ -532,7 +532,7 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                                         />
                                     </div>
                                     <div className="col-span-7">
-                                        <Label htmlFor={`description-${item.id}`}>Descrição</Label>
+                                        <Label htmlFor={`description-${item.id}`}>Description</Label>
                                         <Input
                                             id={`description-${item.id}`}
                                             value={item.description}
@@ -542,7 +542,7 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                                         />
                                     </div>
                                     <div className="col-span-2">
-                                        <Label htmlFor={`price-${item.id}`}>Preço Unitário</Label>
+                                        <Label htmlFor={`price-${item.id}`}>Unit Price</Label>
                                         <Input
                                             id={`price-${item.id}`}
                                             type="number"
@@ -567,62 +567,62 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
                                 </div>
                             ))}
                             <Button variant="outline" onClick={addItem}>
-                                + Adicionar Item
+                                + Add Item
                             </Button>
                         </div>
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="notes">Observações</Label>
+                        <Label htmlFor="notes">Notes</Label>
                         <Textarea
                             id="notes"
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            placeholder="Informações adicionais sobre o orçamento"
+                            placeholder="Additional information about the budget"
                         />
                     </div>
 
                     <div className="border rounded-lg p-4" ref={previewRef}>
-                        <h3 className="text-lg font-bold mb-4">Pré-visualização</h3>
+                        <h3 className="text-lg font-bold mb-4">Preview</h3>
                         <div className="space-y-2">
                             <div className="flex justify-between">
-                                <span>Cliente:</span>
+                                <span>Client:</span>
                                 <span className="font-medium">
                                     {clients.find((c) => c.id === selectedClientId)?.name ||
-                                        "Não selecionado"}
+                                        "Not selected"}
                                 </span>
                             </div>
                             {selectedServiceId && (
                                 <div className="flex justify-between">
-                                    <span>Serviço:</span>
+                                    <span>Service:</span>
                                     <span className="font-medium">
                                         {services.find((s) => s.id === selectedServiceId)?.name}
                                     </span>
                                 </div>
                             )}
                             <div className="flex justify-between">
-                                <span>Data de Validade:</span>
+                                <span>Expiration Date:</span>
                                 <span className="font-medium">
                                     {validUntil
                                         ? format(new Date(validUntil), "dd/MM/yyyy")
-                                        : "Não definido"}
+                                        : "Not defined"}
                                 </span>
                             </div>
                             {selectedProfileType && (
                                 <div className="flex justify-between">
-                                    <span>Tipo de Perfil:</span>
+                                    <span>Profile Type:</span>
                                     <span className="font-medium">{selectedProfileType}</span>
                                 </div>
                             )}
                             {selectedServiceType && (
                                 <div className="flex justify-between">
-                                    <span>Tipo de Serviço:</span>
+                                    <span>Service Type:</span>
                                     <span className="font-medium">{selectedServiceType}</span>
                                 </div>
                             )}
                             {selectedProfileLevel && (
                                 <div className="flex justify-between">
-                                    <span>Nível do Perfil:</span>
+                                    <span>Profile Level:</span>
                                     <span className="font-medium">{selectedProfileLevel}</span>
                                 </div>
                             )}
@@ -681,7 +681,7 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
 
                         {notes && (
                             <div className="mt-4 pt-4 border-t">
-                                <h4 className="font-medium mb-2">Observações:</h4>
+                                <h4 className="font-medium mb-2">Notes:</h4>
                                 <p className="text-sm">{notes}</p>
                             </div>
                         )}
@@ -690,15 +690,15 @@ export default function BudgetDialog({ open, setOpen }: BudgetDialogProps) {
 
                 <DialogFooter className="gap-2 sm:gap-0">
                     <Button variant="outline" onClick={() => setOpen(false)}>
-                        Cancelar
+                        Cancel
                     </Button>
                     <Button onClick={generatePdf} variant="outline">
                         <Download className="mr-2 h-4 w-4" />
-                        Exportar PDF
+                        Export PDF
                     </Button>
                     <Button onClick={generateDocx}>
                         <FileText className="mr-2 h-4 w-4" />
-                        Gerar Orçamento (DOCX)
+                        Generate Budget (DOCX)
                     </Button>
                 </DialogFooter>
             </DialogContent>

@@ -16,47 +16,47 @@ export default function TechnicianSelector({ selectedTechnicians, onTechniciansC
   const { technicians } = useAppContext();
   const [selectedTechnicianId, setSelectedTechnicianId] = useState<string>("");
 
-    const handleAddTechnician = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Add this line
+  const handleAddTechnician = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Add this line
     if (!selectedTechnicianId) {
-      toast.error("Selecione um técnico");
+      toast.error("Select a technician");
       return;
     }
 
     const technician = technicians.find(t => t.id === selectedTechnicianId);
     if (!technician) {
-      toast.error("Técnico não encontrado");
+      toast.error("Technician not found");
       return;
     }
 
     // Check if technician is already added
     const existingTechnician = selectedTechnicians.find(id => id === selectedTechnicianId);
     if (existingTechnician) {
-      toast.error("Este técnico já foi adicionado");
+      toast.error("This technician has already been added");
       return;
     }
 
     onTechniciansChange([...selectedTechnicians, selectedTechnicianId]);
     setSelectedTechnicianId("");
-    toast.success("Técnico adicionado");
+    toast.success("Technician added");
   };
 
   const handleRemoveTechnician = (technicianId: string) => {
     const updated = selectedTechnicians.filter(id => id !== technicianId);
     onTechniciansChange(updated);
-    toast.success("Técnico removido");
+    toast.success("Technician removed");
   };
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium">Técnicos</h3>
-      
+      <h3 className="text-lg font-medium">Technicians</h3>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2">
-          <label className="text-sm font-medium">Técnico</label>
+          <label className="text-sm font-medium">Technician</label>
           <Select value={selectedTechnicianId} onValueChange={setSelectedTechnicianId}>
             <SelectTrigger>
-              <SelectValue placeholder="Selecione um técnico" />
+              <SelectValue placeholder="Select a technician" />
             </SelectTrigger>
             <SelectContent>
               {technicians
@@ -71,15 +71,15 @@ export default function TechnicianSelector({ selectedTechnicians, onTechniciansC
         </div>
 
         <div className="flex items-end">
-                  <Button onClick={handleAddTechnician} className="w-full" type="button">
-            Adicionar Técnico
+          <Button onClick={handleAddTechnician} className="w-full" type="button">
+            Add Technician
           </Button>
         </div>
       </div>
 
       {selectedTechnicians.length > 0 && (
         <div className="space-y-2">
-          <label className="text-sm font-medium">Técnicos Selecionados:</label>
+          <label className="text-sm font-medium">Selected Technicians:</label>
           <div className="flex flex-wrap gap-2">
             {selectedTechnicians.map((technicianId) => {
               const technician = technicians.find(t => t.id === technicianId);
